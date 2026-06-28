@@ -1,0 +1,14 @@
+Reference,Qty,Value,DNP,Exclude from BOM,Exclude from Board,Footprint
+"C1,C2",2,0.1u,,,,Capacitor_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C3,1,50u,,,,Capacitor_THT:C_Radial_D5.0mm_H5.0mm_P2.00mm
+"D9,D10",2,D,,,,Diode_THT:D_A-405_P10.16mm_Horizontal
+"D13,D14",2,LED,,,,LED_THT:LED_D5.0mm_IRBlack
+"K5,K6",2,SANYOU_SRD_Form_C,,,,Relay_THT:Relay_SPDT_SANYOU_SRD_Series_Form_C
+"Q5,Q6",2,2N2219,,,,Package_TO_SOT_THT:TO-92L_Inline
+"R6,R7",2,330R,,,,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+"R10,R11,R12,R13,R14,R15,R16,R17,R18,R19,R20",11,1k,,,,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+"U1,U2",2,Buck_Converter,,,,Interface_devices:Buck_converter
+U3,1,L293D,,,,Package_DIP:DIP-16_W7.62mm
+U4,1,SN74HC32N,,,,SN74HC32N:SN74HC32N
+,,5V Battery Module,,,,
+,,BreadBoard,,,,
