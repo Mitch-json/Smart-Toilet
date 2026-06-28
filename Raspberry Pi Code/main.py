@@ -78,6 +78,8 @@ floor_switch_1 = Pin(2, Pin.IN, Pin.PULL_UP)
 door_switch_1 = Pin(4, Pin.IN, Pin.PULL_UP)
 lock_switch_1 = Pin(5, Pin.IN, Pin.PULL_UP)
 
+bulb_relay = Pin(9, Pin.OUT)                  
+
 # ============================================================
 # USER COUNT SETTINGS
 # ============================================================
@@ -105,6 +107,7 @@ solenoid_valve_relay = Pin(8, Pin.OUT)
 # Start with both relays OFF
 water_pump_relay.value(0)
 solenoid_valve_relay.value(0)
+bulb_relay.value(0)
 
 
 # ============================================================
@@ -134,12 +137,6 @@ motor_enable.duty_u16(0)
 i2c = I2C(0, sda=Pin(16), scl=Pin(17), freq=400000)
 display = sh1106.SH1106_I2C(128, 64, i2c, None, 0x3c)
 
-def read_switches():
-    door_state = door_switch_1.value()
-    lock_state = lock_switch_1.value()
-
-    print("Door switch 1:", door_state)
-    print("Lock switch 1:", lock_state)
 
 def read_switch_states():
     floor_state = floor_switch_1.value()
@@ -148,55 +145,6 @@ def read_switch_states():
 
     return floor_state, door_state, lock_state
 
-
-def format_switch_state(state):
-    if state == 0:
-        return "ON"
-    else:
-        return "OFF"
-
-
-def show_switch_states(floor_state, door_state, lock_state):
-    display.fill(0)
-
-    display.text("Switch States", 0, 0)
-
-    display.text("Floor 1:", 0, 18)
-    display.text(format_switch_state(floor_state), 75, 18)
-
-    display.text("Door:", 0, 34)
-    display.text(format_switch_state(door_state), 75, 34)
-
-    display.text("Lock:", 0, 50)
-    display.text(format_switch_state(lock_state), 75, 50)
-
-    display.show()
-
-
-def print_switch_states(floor_state, door_state, lock_state):
-    print("Floor switch 1:", floor_state, "-", format_switch_state(floor_state))
-    print("Door switch 1:", door_state, "-", format_switch_state(door_state))
-    print("Lock switch 1:", lock_state, "-", format_switch_state(lock_state))
-    
-def control_relays_from_door_switch():
-    door_state = door_switch_1.value()
-
-    if door_state == 0:
-        # Door switch is closed/pressed
-        water_pump_relay.value(1)
-        solenoid_valve_relay.value(1)
-
-        print("Door switch 1: 0")
-        print("Water pump relay: ON")
-        print("Solenoid valve relay: ON")
-    else:
-        # Door switch is open/not pressed
-        water_pump_relay.value(0)
-        solenoid_valve_relay.value(0)
-
-        print("Door switch 1: 1")
-        print("Water pump relay: OFF")
-        print("Solenoid valve relay: OFF")
 
 MOTOR_QUARTER_SPEED = 16384
 MOTOR_HALF_SPEED = 32768   # 50% duty cycle
@@ -224,18 +172,6 @@ def motor_anticlockwise():
     motor_enable.duty_u16(MOTOR_HALF_SPEED)
     print("Motor: ANTI-CLOCKWISE at half speed")
 
-
-def run_motor_test_cycle():
-    motor_clockwise()
-    sleep_ms(5000)
-
-    motor_stop()
-    sleep_ms(5000)
-
-    motor_anticlockwise()
-    sleep_ms(5000)
-
-    motor_stop()
 
 def init_display():
     display.fill(0)
@@ -939,6 +875,24 @@ def check_tank_email_alerts(urine_level, urine_distance, poop_level, poop_distan
 # FLOOR SWITCH STATE TRACKING
 # ============================================================
 
+def control_bulb_from_door_switch(door_state):
+    """
+    Door switch controls ONLY the bulb relay.
+
+    With Pin.PULL_UP:
+        door_state == 0 means Door is ON
+        door_state == 1 means Door is OFF
+    """
+
+    if door_state == 0:
+        bulb_relay.value(1)
+        print("Door: ON")
+        print("Bulb relay: ON")
+    else:
+        bulb_relay.value(0)
+        print("Door: OFF")
+        print("Bulb relay: OFF")
+
 previous_floor_state = floor_switch_1.value()
 
 # ============================================================
@@ -986,6 +940,9 @@ while True:
 
     handle_user_counting(door_state, lock_state)
     handle_floor_switch_state_change(floor_state)
+    
+    # Door switch controls ONLY the bulb relay
+    control_bulb_from_door_switch(door_state)
 
     # Print raw readings
     print("Raw urine tank distance:", format_distance(raw_urine_tank_distance))
