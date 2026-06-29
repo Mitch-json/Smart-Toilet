@@ -96,6 +96,18 @@ previous_lock_state = lock_switch_1.value()
 door_opened_before_lock = False
 
 # ============================================================
+# BULB RELAY SEQUENCE SETTINGS
+# ============================================================
+
+previous_door_state_for_bulb = door_switch_1.value()
+previous_lock_state_for_bulb = lock_switch_1.value()
+
+waiting_for_lock_to_turn_bulb_on = False
+waiting_for_door_to_close_to_turn_bulb_off = False
+
+bulb_is_on = False
+
+# ============================================================
 # RELAY OUTPUT SETUP
 # Water pump relay -> GP0
 # Solenoid valve relay -> GP8
@@ -871,27 +883,90 @@ def check_tank_email_alerts(urine_level, urine_distance, poop_level, poop_distan
             poop_email_sent = False
             save_email_state(POOP_EMAIL_STATE_FILE, False)
 
+
+def handle_bulb_control(door_state, lock_state):
+    """
+    Controls ONLY the bulb relay.
+
+    Bulb turns ON when:
+    1. Door switch changes from OFF to ON
+    2. Then lock switch changes from OFF to ON
+
+    Bulb turns OFF when:
+    1. Door switch changes from ON to OFF
+    2. Then door switch changes from OFF to ON
+
+    With Pin.PULL_UP:
+        ON  = 0
+        OFF = 1
+    """
+
+    global previous_door_state_for_bulb
+    global previous_lock_state_for_bulb
+    global waiting_for_lock_to_turn_bulb_on
+    global waiting_for_door_to_close_to_turn_bulb_off
+    global bulb_is_on
+
+    # --------------------------------------------------------
+    # TURN BULB ON SEQUENCE
+    # Door OFF -> ON, then Lock OFF -> ON
+    # --------------------------------------------------------
+
+    if not bulb_is_on:
+
+        # Step 1: Door changes from OFF to ON
+        if previous_door_state_for_bulb == 1 and door_state == 0:
+            waiting_for_lock_to_turn_bulb_on = True
+            print("Bulb sequence: Door changed from OFF to ON")
+            print("Waiting for lock switch to change from OFF to ON")
+
+        # Step 2: Lock changes from OFF to ON
+        if waiting_for_lock_to_turn_bulb_on:
+            if previous_lock_state_for_bulb == 1 and lock_state == 0:
+                bulb_relay.value(1)
+                bulb_is_on = True
+                waiting_for_lock_to_turn_bulb_on = False
+
+                print("Bulb sequence: Lock changed from OFF to ON")
+                print("Bulb relay: ON")
+
+        # Cancel ON sequence if door goes back OFF before lock is turned ON
+        if waiting_for_lock_to_turn_bulb_on:
+            if previous_door_state_for_bulb == 0 and door_state == 1:
+                waiting_for_lock_to_turn_bulb_on = False
+                print("Bulb ON sequence cancelled")
+
+    # --------------------------------------------------------
+    # TURN BULB OFF SEQUENCE
+    # Door ON -> OFF, then Door OFF -> ON
+    # This means the person opened and then closed the door.
+    # --------------------------------------------------------
+
+    if bulb_is_on:
+
+        # Step 1: Door changes from ON to OFF
+        if previous_door_state_for_bulb == 0 and door_state == 1:
+            waiting_for_door_to_close_to_turn_bulb_off = True
+            print("Bulb OFF sequence: Door changed from ON to OFF")
+            print("Waiting for door switch to change from OFF to ON")
+
+        # Step 2: Door changes from OFF to ON
+        if waiting_for_door_to_close_to_turn_bulb_off:
+            if previous_door_state_for_bulb == 1 and door_state == 0:
+                bulb_relay.value(0)
+                bulb_is_on = False
+                waiting_for_door_to_close_to_turn_bulb_off = False
+
+                print("Bulb OFF sequence: Door changed from OFF to ON")
+                print("Bulb relay: OFF")
+
+    previous_door_state_for_bulb = door_state
+    previous_lock_state_for_bulb = lock_state
+
 # ============================================================
 # FLOOR SWITCH STATE TRACKING
 # ============================================================
 
-def control_bulb_from_door_switch(door_state):
-    """
-    Door switch controls ONLY the bulb relay.
-
-    With Pin.PULL_UP:
-        door_state == 0 means Door is ON
-        door_state == 1 means Door is OFF
-    """
-
-    if door_state == 0:
-        bulb_relay.value(1)
-        print("Door: ON")
-        print("Bulb relay: ON")
-    else:
-        bulb_relay.value(0)
-        print("Door: OFF")
-        print("Bulb relay: OFF")
 
 previous_floor_state = floor_switch_1.value()
 
@@ -941,8 +1016,8 @@ while True:
     handle_user_counting(door_state, lock_state)
     handle_floor_switch_state_change(floor_state)
     
-    # Door switch controls ONLY the bulb relay
-    control_bulb_from_door_switch(door_state)
+    # Door and lock sequence controls ONLY the bulb relay
+    handle_bulb_control(door_state, lock_state)
 
     # Print raw readings
     print("Raw urine tank distance:", format_distance(raw_urine_tank_distance))
