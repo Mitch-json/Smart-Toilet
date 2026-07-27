@@ -4894,6 +4894,12 @@
 		(uuid "5b8572eb-6328-45d9-b562-d7039e9b2cf7")
 	)
 	(junction
+		(at 186.69 138.43)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "602f293d-7110-4578-9a65-0d6d110c6e19")
+	)
+	(junction
 		(at 213.36 34.29)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4912,16 +4918,22 @@
 		(uuid "82ee78d1-4788-4a8f-8130-f3881d7c743e")
 	)
 	(junction
+		(at 194.31 97.79)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "8a657cd1-358a-4fd9-a590-10abf02c8842")
+	)
+	(junction
+		(at 172.72 143.51)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "8c9f6c01-df47-428e-a333-284094163dc2")
+	)
+	(junction
 		(at 102.87 99.06)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "943b21ad-abd3-4c96-a4b4-bdaf89477919")
-	)
-	(junction
-		(at 48.26 143.51)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "9a9c2fe2-8e6d-48e3-a6fc-43f9fe88caf5")
 	)
 	(junction
 		(at 269.24 74.93)
@@ -4994,12 +5006,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f779e4f2-7c54-473b-9aee-56a5566a81be")
-	)
-	(junction
-		(at 48.26 115.57)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "fc471010-f7d1-4f8f-b126-2e21ef363415")
 	)
 	(no_connect
 		(at 171.45 85.09)
@@ -5145,7 +5151,7 @@
 	)
 	(wire
 		(pts
-			(xy 167.64 138.43) (xy 172.72 138.43)
+			(xy 167.64 138.43) (xy 177.8 138.43)
 		)
 		(stroke
 			(width 0)
@@ -5155,7 +5161,7 @@
 	)
 	(wire
 		(pts
-			(xy 196.85 100.33) (xy 196.85 99.06)
+			(xy 190.5 123.19) (xy 190.5 121.92)
 		)
 		(stroke
 			(width 0)
@@ -5265,7 +5271,7 @@
 	)
 	(wire
 		(pts
-			(xy 201.93 102.87) (xy 207.01 102.87)
+			(xy 195.58 125.73) (xy 200.66 125.73)
 		)
 		(stroke
 			(width 0)
@@ -5365,16 +5371,6 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 115.57) (xy 50.8 115.57)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1cf7bdff-a424-4ab2-b068-eaaf04d5be74")
-	)
-	(wire
-		(pts
 			(xy 243.84 74.93) (xy 250.19 74.93)
 		)
 		(stroke
@@ -5445,6 +5441,16 @@
 	)
 	(wire
 		(pts
+			(xy 186.69 143.51) (xy 186.69 138.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "237a8989-a573-4a86-a19a-2db892c433ba")
+	)
+	(wire
+		(pts
 			(xy 140.97 34.29) (xy 143.51 34.29)
 		)
 		(stroke
@@ -5472,6 +5478,16 @@
 			(type default)
 		)
 		(uuid "249cb2c6-a009-4f13-a3cb-dd58f581ef1d")
+	)
+	(wire
+		(pts
+			(xy 45.72 121.92) (xy 53.34 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "25238afc-4cd4-4ae7-be2e-f33851150759")
 	)
 	(wire
 		(pts
@@ -5515,16 +5531,6 @@
 	)
 	(wire
 		(pts
-			(xy 127 82.55) (xy 137.16 82.55)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "29fe9c5b-6823-4e3a-8e6c-268a9964ccc2")
-	)
-	(wire
-		(pts
 			(xy 171.45 102.87) (xy 163.83 102.87)
 		)
 		(stroke
@@ -5532,16 +5538,6 @@
 			(type default)
 		)
 		(uuid "2b6b4f55-21b4-4c5f-b97e-b77d02bdd62a")
-	)
-	(wire
-		(pts
-			(xy 48.26 111.76) (xy 48.26 113.03)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2b73da31-ef6f-4ae6-9bce-502c65e4e9ff")
 	)
 	(wire
 		(pts
@@ -5725,7 +5721,7 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 107.95) (xy 207.01 107.95)
+			(xy 196.85 130.81) (xy 200.66 130.81)
 		)
 		(stroke
 			(width 0)
@@ -5742,16 +5738,6 @@
 			(type default)
 		)
 		(uuid "3de11cd8-808d-469f-aad3-4f561aed3e09")
-	)
-	(wire
-		(pts
-			(xy 127 80.01) (xy 137.16 80.01)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3f8550ef-2c91-4f98-af14-7eae27dc80ad")
 	)
 	(wire
 		(pts
@@ -5772,6 +5758,26 @@
 			(type default)
 		)
 		(uuid "41df6bc3-cfb2-4cc1-b634-00d5ca4ffb21")
+	)
+	(wire
+		(pts
+			(xy 172.72 140.97) (xy 172.72 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4494185e-dc71-43be-80ea-9ba9e64a3cb4")
+	)
+	(wire
+		(pts
+			(xy 203.2 97.79) (xy 204.47 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "45c59a41-d020-4172-b305-3002a8c67733")
 	)
 	(wire
 		(pts
@@ -5915,6 +5921,16 @@
 	)
 	(wire
 		(pts
+			(xy 194.31 97.79) (xy 194.31 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "52f6df82-f960-4918-b93e-671ec392e8fd")
+	)
+	(wire
+		(pts
 			(xy 255.27 123.19) (xy 255.27 125.73)
 		)
 		(stroke
@@ -5985,6 +6001,16 @@
 	)
 	(wire
 		(pts
+			(xy 45.72 119.38) (xy 48.26 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "597eda65-0dc8-4ecd-aebd-705336f4389c")
+	)
+	(wire
+		(pts
 			(xy 129.54 77.47) (xy 137.16 77.47)
 		)
 		(stroke
@@ -6012,6 +6038,26 @@
 			(type default)
 		)
 		(uuid "5bda9f2f-e1bf-4f7d-ab38-4d87131b569f")
+	)
+	(wire
+		(pts
+			(xy 46.99 146.05) (xy 52.07 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5c3ea9b7-6fa8-4100-a81f-c58caec595c2")
+	)
+	(wire
+		(pts
+			(xy 48.26 116.84) (xy 48.26 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5cd728ae-b4f8-4337-88f4-c85c569e4a86")
 	)
 	(wire
 		(pts
@@ -6072,6 +6118,26 @@
 			(type default)
 		)
 		(uuid "63b11d8d-f8c6-4f39-b48e-a222d03935d2")
+	)
+	(wire
+		(pts
+			(xy 125.73 82.55) (xy 137.16 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "64c12064-3d74-48fc-afac-05632c7c574c")
+	)
+	(wire
+		(pts
+			(xy 125.73 80.01) (xy 137.16 80.01)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "650da20f-14b6-4b3d-87dc-06c1dde75b23")
 	)
 	(wire
 		(pts
@@ -6165,6 +6231,16 @@
 	)
 	(wire
 		(pts
+			(xy 45.72 124.46) (xy 52.07 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6f14f012-fa06-4780-b5a0-b591102e0178")
+	)
+	(wire
+		(pts
 			(xy 163.83 100.33) (xy 176.53 100.33)
 		)
 		(stroke
@@ -6172,6 +6248,16 @@
 			(type default)
 		)
 		(uuid "6fc47562-fe3e-4847-b84b-d6653b8fe573")
+	)
+	(wire
+		(pts
+			(xy 194.31 97.79) (xy 195.58 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "71e9cfc7-8b51-44be-a7d3-21af0511306e")
 	)
 	(wire
 		(pts
@@ -6435,7 +6521,7 @@
 	)
 	(wire
 		(pts
-			(xy 196.85 100.33) (xy 207.01 100.33)
+			(xy 190.5 123.19) (xy 200.66 123.19)
 		)
 		(stroke
 			(width 0)
@@ -6452,16 +6538,6 @@
 			(type default)
 		)
 		(uuid "a16d937a-bc51-4425-a003-16576d5684b5")
-	)
-	(wire
-		(pts
-			(xy 48.26 143.51) (xy 50.8 143.51)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a30d0b3e-8099-4ce9-ba9a-c0eb98344f41")
 	)
 	(wire
 		(pts
@@ -6512,6 +6588,16 @@
 			(type default)
 		)
 		(uuid "a884fec0-36e8-4879-91d9-e072565fc62a")
+	)
+	(wire
+		(pts
+			(xy 185.42 143.51) (xy 186.69 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a8d1d1da-92c0-49cc-b5b7-a9758c16a779")
 	)
 	(wire
 		(pts
@@ -6575,7 +6661,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 97.79) (xy 179.07 97.79)
+			(xy 163.83 97.79) (xy 194.31 97.79)
 		)
 		(stroke
 			(width 0)
@@ -6665,7 +6751,7 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 139.7) (xy 48.26 140.97)
+			(xy 48.26 138.43) (xy 48.26 140.97)
 		)
 		(stroke
 			(width 0)
@@ -6725,6 +6811,16 @@
 	)
 	(wire
 		(pts
+			(xy 194.31 106.68) (xy 194.31 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c54035af-218f-4f03-b2a4-1733d1c4df48")
+	)
+	(wire
+		(pts
 			(xy 167.64 140.97) (xy 172.72 140.97)
 		)
 		(stroke
@@ -6775,16 +6871,6 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 143.51) (xy 48.26 146.05)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cb3c2c11-adca-4cf7-932a-32758f7bca3a")
-	)
-	(wire
-		(pts
 			(xy 83.82 101.6) (xy 80.01 101.6)
 		)
 		(stroke
@@ -6802,6 +6888,16 @@
 			(type default)
 		)
 		(uuid "cbf0caf0-95b8-456a-b106-4f0b9e2cb995")
+	)
+	(wire
+		(pts
+			(xy 46.99 143.51) (xy 53.34 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cc9de407-bb76-43f1-a6b0-07a8334a3402")
 	)
 	(wire
 		(pts
@@ -6845,7 +6941,7 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 105.41) (xy 207.01 105.41)
+			(xy 196.85 128.27) (xy 200.66 128.27)
 		)
 		(stroke
 			(width 0)
@@ -6855,7 +6951,7 @@
 	)
 	(wire
 		(pts
-			(xy 180.34 138.43) (xy 182.88 138.43)
+			(xy 185.42 138.43) (xy 186.69 138.43)
 		)
 		(stroke
 			(width 0)
@@ -6885,6 +6981,16 @@
 	)
 	(wire
 		(pts
+			(xy 172.72 143.51) (xy 177.8 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d4c66f85-878f-46a7-ae80-77b8475e0c7b")
+	)
+	(wire
+		(pts
 			(xy 152.4 25.4) (xy 154.94 25.4)
 		)
 		(stroke
@@ -6892,6 +6998,16 @@
 			(type default)
 		)
 		(uuid "d760f45e-246c-4690-af58-6b4a1d89f32b")
+	)
+	(wire
+		(pts
+			(xy 46.99 140.97) (xy 48.26 140.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "db1c4f31-8e4a-44c1-a9aa-75d7233c100d")
 	)
 	(wire
 		(pts
@@ -7075,6 +7191,16 @@
 	)
 	(wire
 		(pts
+			(xy 186.69 138.43) (xy 187.96 138.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ea19bb65-0408-4f7c-a195-6f0eb6751636")
+	)
+	(wire
+		(pts
 			(xy 257.81 123.19) (xy 257.81 125.73)
 		)
 		(stroke
@@ -7122,6 +7248,16 @@
 			(type default)
 		)
 		(uuid "f0edcadc-0e2c-4644-b576-76654414319e")
+	)
+	(wire
+		(pts
+			(xy 172.72 143.51) (xy 172.72 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f338117f-fc3b-4afd-a7de-e4ac6c9f17f5")
 	)
 	(wire
 		(pts
@@ -7262,16 +7398,6 @@
 			(type default)
 		)
 		(uuid "fc4dd945-8c19-4062-90c3-19f05dc909b1")
-	)
-	(wire
-		(pts
-			(xy 48.26 115.57) (xy 48.26 118.11)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fcbbceac-930b-4ec7-990b-266d76835c88")
 	)
 	(wire
 		(pts
@@ -7703,6 +7829,30 @@
 		)
 		(uuid "fd6a239d-f489-43ab-8221-9f5f21f8507f")
 	)
+	(global_label "Servo Motor Signal 1"
+		(shape input)
+		(at 53.34 121.92 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "04b4cf1e-b071-4a38-a080-ec8c9931d541")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 76.8262 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+	)
 	(global_label "Door_Switch1"
 		(shape input)
 		(at 127 72.39 180)
@@ -7871,30 +8021,6 @@
 			)
 		)
 	)
-	(global_label "Door_Switch2"
-		(shape output)
-		(at 50.8 115.57 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "2b490d37-27e7-416d-a726-d8bf128eb308")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 66.4246 115.57 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-	)
 	(global_label "Pad_Dispenser_Switch"
 		(shape output)
 		(at 170.18 158.75 0)
@@ -7969,7 +8095,7 @@
 	)
 	(global_label "OLED_SCL"
 		(shape bidirectional)
-		(at 203.2 105.41 180)
+		(at 196.85 128.27 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -7979,7 +8105,7 @@
 		)
 		(uuid "3e18537b-2ce4-4f7c-b65f-eb12c529effe")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 191.534 105.3306 0)
+			(at 185.184 128.1906 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8004,6 +8130,30 @@
 		(uuid "3f5ad2c3-1276-432d-b6d8-1643003a8692")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 202.029 20.32 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+	)
+	(global_label "Servo Motor Signal 1"
+		(shape output)
+		(at 125.73 80.01 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "46636fd9-3468-44c4-a69a-613df80b3f57")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 102.2438 80.01 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8113,7 +8263,7 @@
 	)
 	(global_label "PI_IN_5V"
 		(shape input)
-		(at 196.85 99.06 90)
+		(at 190.5 121.92 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8123,7 +8273,7 @@
 		)
 		(uuid "5d54afb7-dea6-4018-87e2-3ab5ea7d6ef7")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 196.85 88.0314 90)
+			(at 190.5 110.8914 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8137,7 +8287,7 @@
 	)
 	(global_label "Echo2"
 		(shape output)
-		(at 182.88 138.43 0)
+		(at 187.96 138.43 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8147,7 +8297,7 @@
 		)
 		(uuid "5eba3859-85fe-401c-915d-11ef0615e36f")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 191.6103 138.43 0)
+			(at 196.6903 138.43 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8161,7 +8311,7 @@
 	)
 	(global_label "OLED_SDA"
 		(shape bidirectional)
-		(at 203.2 107.95 180)
+		(at 196.85 130.81 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8171,7 +8321,7 @@
 		)
 		(uuid "6922f413-e772-408e-a0da-45555c03a52a")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 191.4736 107.8706 0)
+			(at 185.1236 130.7306 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8180,30 +8330,6 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
-			)
-		)
-	)
-	(global_label "Lock_Switch2"
-		(shape output)
-		(at 50.8 143.51 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "6ab37106-ae47-4604-974b-eb3e6cc84ad6")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 66.3642 143.51 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
 			)
 		)
 	)
@@ -8279,6 +8405,30 @@
 			)
 		)
 	)
+	(global_label "Servo Motor Signal 2"
+		(shape input)
+		(at 53.34 143.51 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7851458a-00af-4531-ac8c-c0c311522195")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 76.8262 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+	)
 	(global_label "PI_IN_GND"
 		(shape input)
 		(at 171.45 64.77 0)
@@ -8300,54 +8450,6 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
-			)
-		)
-	)
-	(global_label "Lock_Switch2"
-		(shape input)
-		(at 127 82.55 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "89f49bb2-a39f-4906-a433-fe9b4395039e")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 111.4358 82.55 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-	)
-	(global_label "Door_Switch2"
-		(shape input)
-		(at 127 80.01 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "9498d5dd-1187-4558-8fa6-f6f1a76d8e7e")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 111.3754 80.01 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
 			)
 		)
 	)
@@ -8927,6 +9029,30 @@
 			)
 		)
 	)
+	(global_label "Servo Motor Signal 2"
+		(shape output)
+		(at 125.73 82.55 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "f2c6c189-ea3a-4ff6-ae92-7d09155121fa")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 102.2438 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+	)
 	(global_label "Trigger2"
 		(shape output)
 		(at 127 97.79 180)
@@ -8977,7 +9103,7 @@
 	)
 	(global_label "Solar_IN"
 		(shape input)
-		(at 179.07 97.79 0)
+		(at 204.47 97.79 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8987,7 +9113,7 @@
 		)
 		(uuid "fe335646-7ee7-4e2e-aa28-8736f0301f30")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 189.917 97.79 0)
+			(at 215.317 97.79 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9433,8 +9559,8 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 48.26 153.67 0)
+		(lib_id "power:+5V")
+		(at 48.26 138.43 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -9443,9 +9569,9 @@
 		(in_pos_files yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "0ecd0bec-8aa4-4768-872a-453aa54147d4")
-		(property "Reference" "#PWR054"
-			(at 48.26 160.02 0)
+		(uuid "0f69322a-cd39-4992-9d17-647a154544d4")
+		(property "Reference" "#PWR053"
+			(at 48.26 142.24 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9455,8 +9581,8 @@
 				)
 			)
 		)
-		(property "Value" "GND"
-			(at 48.26 158.75 0)
+		(property "Value" "+5V"
+			(at 48.26 133.35 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9466,7 +9592,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 48.26 153.67 0)
+			(at 48.26 138.43 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9477,7 +9603,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 48.26 153.67 0)
+			(at 48.26 138.43 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9488,7 +9614,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 48.26 153.67 0)
+			(at 48.26 138.43 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9499,12 +9625,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "56b3a22c-b70b-4506-99c6-7bfb7de89d00")
+			(uuid "9a3a4b54-b5d6-4d6e-99a3-36b029abbf15")
 		)
 		(instances
 			(project "Smart Toilet"
 				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
-					(reference "#PWR054")
+					(reference "#PWR053")
 					(unit 1)
 				)
 			)
@@ -9590,7 +9716,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 176.53 138.43 270)
+		(at 181.61 138.43 270)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -9600,7 +9726,7 @@
 		(dnp no)
 		(uuid "12e16d0c-3ba1-4f26-a825-8676240dbc8c")
 		(property "Reference" "R19"
-			(at 176.53 140.97 90)
+			(at 181.61 140.97 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9610,7 +9736,7 @@
 			)
 		)
 		(property "Value" "1k"
-			(at 176.53 143.51 90)
+			(at 181.356 138.684 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9620,7 +9746,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
-			(at 176.53 136.652 90)
+			(at 181.61 136.652 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9631,7 +9757,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 176.53 138.43 0)
+			(at 181.61 138.43 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9642,7 +9768,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 176.53 138.43 0)
+			(at 181.61 138.43 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10756,6 +10882,84 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 52.07 124.46 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "285348e4-74e3-4d04-9ff4-e2cc0bff6ca2")
+		(property "Reference" "#PWR052"
+			(at 52.07 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 52.07 129.54 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 52.07 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 52.07 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 52.07 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "30845f38-9d48-4382-9d1e-f678f01c7b61")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "#PWR052")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+5V")
 		(at 179.07 44.45 0)
 		(unit 1)
@@ -10915,7 +11119,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 172.72 140.97 0)
+		(at 172.72 146.05 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -10926,7 +11130,7 @@
 		(fields_autoplaced yes)
 		(uuid "2df37713-5e07-490b-8127-4861c7083dab")
 		(property "Reference" "#PWR056"
-			(at 172.72 147.32 0)
+			(at 172.72 152.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10937,7 +11141,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 172.72 146.05 0)
+			(at 172.72 151.13 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10947,7 +11151,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 172.72 140.97 0)
+			(at 172.72 146.05 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10958,7 +11162,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 172.72 140.97 0)
+			(at 172.72 146.05 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10969,7 +11173,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 172.72 140.97 0)
+			(at 172.72 146.05 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12091,6 +12295,84 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+5V")
+		(at 48.26 116.84 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "4c7bb54d-2d11-492a-8e11-330f6d1bef9d")
+		(property "Reference" "#PWR054"
+			(at 48.26 120.65 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+5V"
+			(at 48.26 111.76 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 48.26 116.84 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 48.26 116.84 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 48.26 116.84 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "a87627a7-1757-4e5a-bbc4-d0916aa01206")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "#PWR054")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Transistor_BJT:2N2219")
 		(at 57.15 185.42 0)
 		(mirror y)
@@ -12428,6 +12710,85 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 199.39 97.79 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "572c5f1f-ce57-4d1e-beeb-a2814967a22e")
+		(property "Reference" "R22"
+			(at 199.39 100.33 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1k"
+			(at 199.39 102.87 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+			(at 199.39 96.012 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 199.39 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 199.39 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "276562b7-07c9-4d30-b2fe-678e2061efdf")
+		)
+		(pin "2"
+			(uuid "86826462-cb27-458a-a0cf-b04be5f44f52")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "R22")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 179.07 49.53 0)
 		(unit 1)
@@ -12507,7 +12868,7 @@
 	)
 	(symbol
 		(lib_id "Connector:Screw_Terminal_01x04")
-		(at 212.09 102.87 0)
+		(at 205.74 125.73 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -12518,7 +12879,7 @@
 		(fields_autoplaced yes)
 		(uuid "58344207-f54f-4425-bbaf-c7e19fe1f0b2")
 		(property "Reference" "J3"
-			(at 214.63 102.8699 0)
+			(at 208.28 125.7299 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -12529,7 +12890,7 @@
 			)
 		)
 		(property "Value" "OLED"
-			(at 214.63 105.4099 0)
+			(at 208.28 128.2699 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -12540,7 +12901,7 @@
 			)
 		)
 		(property "Footprint" "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-04P_1x04_P5.00mm"
-			(at 212.09 102.87 0)
+			(at 205.74 125.73 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12551,7 +12912,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 212.09 102.87 0)
+			(at 205.74 125.73 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12562,7 +12923,7 @@
 			)
 		)
 		(property "Description" "Generic screw terminal, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 212.09 102.87 0)
+			(at 205.74 125.73 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12745,6 +13106,85 @@
 			(project "Smart Toilet"
 				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
 					(reference "#PWR035")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 181.61 143.51 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "5a54bd25-3cc0-4dd4-86af-a5230838b1d0")
+		(property "Reference" "R24"
+			(at 181.102 146.558 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "2k"
+			(at 181.356 143.51 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+			(at 181.61 141.732 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 181.61 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 181.61 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "5a268052-dd07-43be-8ddc-d3c13a7b8278")
+		)
+		(pin "2"
+			(uuid "a2fb1217-03cf-4d28-bc07-480b5291e9d7")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "R24")
 					(unit 1)
 				)
 			)
@@ -13604,86 +14044,6 @@
 			(project "Smart Toilet"
 				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
 					(reference "D12")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:Screw_Terminal_01x02")
-		(at 43.18 115.57 180)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "69225f71-3d36-4950-b2d0-a4ba78fbc8b8")
-		(property "Reference" "J12"
-			(at 43.18 109.22 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Screw_Terminal_01x02"
-			(at 43.18 109.22 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"
-			(at 43.18 115.57 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 43.18 115.57 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 43.18 115.57 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "3006c31c-95f6-4f3a-ba2e-1196b97f3872")
-		)
-		(pin "2"
-			(uuid "6fc352c7-c65a-4163-bbcd-190d8db51191")
-		)
-		(instances
-			(project "Smart Toilet"
-				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
-					(reference "J12")
 					(unit 1)
 				)
 			)
@@ -14662,84 +15022,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 48.26 125.73 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "7e08146a-9f3f-432a-ae57-b83d8d7c99b7")
-		(property "Reference" "#PWR052"
-			(at 48.26 132.08 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 48.26 130.81 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 48.26 125.73 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 48.26 125.73 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 48.26 125.73 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "7304a239-780e-466e-8f7a-7e8f1d5c9e47")
-		)
-		(instances
-			(project "Smart Toilet"
-				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
-					(reference "#PWR052")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 245.11 50.8 0)
 		(unit 1)
@@ -15054,6 +15336,84 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 194.31 109.22 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "86f421ce-850d-47ce-9c56-6be78581d80a")
+		(property "Reference" "#PWR063"
+			(at 194.31 115.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 194.31 114.3 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 194.31 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 194.31 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 194.31 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "172ad954-8628-4151-bfcc-277167944133")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "#PWR063")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:D")
 		(at 128.27 172.72 90)
 		(mirror x)
@@ -15131,86 +15491,6 @@
 			(project "Smart Toilet"
 				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
 					(reference "D10")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:Screw_Terminal_01x02")
-		(at 43.18 143.51 180)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "91142e6d-92dc-4a95-b757-049409e3fbc3")
-		(property "Reference" "J13"
-			(at 43.18 137.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Screw_Terminal_01x02"
-			(at 43.18 137.16 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"
-			(at 43.18 143.51 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 43.18 143.51 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 43.18 143.51 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "42d5f0f0-a921-473f-8b8f-c3e0dcc7cbff")
-		)
-		(pin "2"
-			(uuid "c1582a67-245b-4ba4-a8aa-e15132f36b35")
-		)
-		(instances
-			(project "Smart Toilet"
-				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
-					(reference "J13")
 					(unit 1)
 				)
 			)
@@ -15605,6 +15885,89 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:Screw_Terminal_01x03")
+		(at 41.91 143.51 0)
+		(mirror y)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "9e218383-5273-4f60-abad-5fdded304066")
+		(property "Reference" "J13"
+			(at 42.164 149.86 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Servo Motor 2"
+			(at 42.164 152.4 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-03P_1x03_P5.00mm"
+			(at 41.91 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 41.91 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 41.91 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "00305d79-665b-40b7-a8d2-35cf624ae202")
+		)
+		(pin "2"
+			(uuid "f026bda6-077e-47c7-b809-781071b2b072")
+		)
+		(pin "3"
+			(uuid "93309fbe-350d-45b6-9871-3fc406d89dcd")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "J13")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Mechanical:MountingHole")
 		(at 262.89 151.13 0)
 		(unit 1)
@@ -15834,6 +16197,85 @@
 			(project "Smart Toilet"
 				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
 					(reference "R21")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 194.31 102.87 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "a204ebfd-e524-48fe-b1e9-897d8f0f608c")
+		(property "Reference" "R23"
+			(at 196.342 106.172 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "2k"
+			(at 198.882 106.172 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+			(at 192.532 102.87 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 194.31 102.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 194.31 102.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "3ae910ba-b52d-4512-b0a5-d88e0409488e")
+		)
+		(pin "2"
+			(uuid "dfcf2b12-dd3b-4a86-8588-2efd09bdcec7")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "R23")
 					(unit 1)
 				)
 			)
@@ -16243,84 +16685,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
-		(at 48.26 111.76 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "ac683efa-95e0-48e3-b728-3eb234c6c4ab")
-		(property "Reference" "#PWR051"
-			(at 48.26 115.57 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 48.26 106.68 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 48.26 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 48.26 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 48.26 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "cce5b200-dab4-46f6-b3a0-b8a98bd01f13")
-		)
-		(instances
-			(project "Smart Toilet"
-				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
-					(reference "#PWR051")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 119.38 148.59 0)
 		(mirror y)
@@ -16394,86 +16758,6 @@
 			(project "Smart Toilet"
 				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
 					(reference "#PWR059")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 48.26 121.92 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "ae3804df-3c16-4c76-bc04-4ac8fba78cc1")
-		(property "Reference" "R16"
-			(at 54.61 121.92 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "1k"
-			(at 52.07 121.92 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
-			(at 46.482 121.92 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 48.26 121.92 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 48.26 121.92 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "242b1fb0-757a-4ae4-b677-1a02685b3cff")
-		)
-		(pin "2"
-			(uuid "ae19b7c1-b8b2-483d-b8af-b1c6cf69b1fc")
-		)
-		(instances
-			(project "Smart Toilet"
-				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
-					(reference "R16")
 					(unit 1)
 				)
 			)
@@ -17607,86 +17891,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 48.26 149.86 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "cd14e483-36cf-43ef-84e0-56f5fd9f5c90")
-		(property "Reference" "R17"
-			(at 54.61 149.86 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "1k"
-			(at 52.07 149.86 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
-			(at 46.482 149.86 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 48.26 149.86 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 48.26 149.86 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "2ef94c11-0855-4ef5-a460-27f514b4972d")
-		)
-		(pin "2"
-			(uuid "69880b23-c7f1-47cc-8185-184fe844b72c")
-		)
-		(instances
-			(project "Smart Toilet"
-				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
-					(reference "R17")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "interface_devices:Buck_Converter")
 		(at 229.87 22.86 180)
 		(unit 1)
@@ -18547,84 +18751,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
-		(at 48.26 139.7 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "e481b299-f898-4b28-a991-28480c8b4430")
-		(property "Reference" "#PWR053"
-			(at 48.26 143.51 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 48.26 134.62 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 48.26 139.7 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 48.26 139.7 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 48.26 139.7 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "50582fad-f8e5-45f9-b9dc-42f116c9039c")
-		)
-		(instances
-			(project "Smart Toilet"
-				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
-					(reference "#PWR053")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "interface_devices:Buck_Converter")
 		(at 165.1 27.94 0)
 		(unit 1)
@@ -18705,6 +18831,84 @@
 			(project "Smart Toilet"
 				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
 					(reference "U1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 52.07 146.05 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e7f28253-30ca-43e7-b466-7c2d936c1f6a")
+		(property "Reference" "#PWR051"
+			(at 52.07 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 52.07 151.13 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 52.07 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 52.07 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 52.07 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "3282fc38-543b-40cc-a417-b92ddbbe1167")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "#PWR051")
 					(unit 1)
 				)
 			)
@@ -18952,6 +19156,89 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:Screw_Terminal_01x03")
+		(at 40.64 121.92 0)
+		(mirror y)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "f446f8e1-5ca1-485c-99b4-9660fb6f70cf")
+		(property "Reference" "J22"
+			(at 40.894 128.27 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Servo Motor 1"
+			(at 40.894 130.81 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-03P_1x03_P5.00mm"
+			(at 40.64 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 40.64 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 40.64 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c6b2fd1d-4edf-4e11-8819-19c297574508")
+		)
+		(pin "2"
+			(uuid "9ec347db-8e69-4388-90d4-5bdbca2bbb61")
+		)
+		(pin "3"
+			(uuid "fe9b01e2-a524-42bc-83e7-1f32081a51c7")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "J22")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 62.23 181.61 0)
 		(unit 1)
@@ -19111,7 +19398,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 201.93 102.87 270)
+		(at 195.58 125.73 270)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -19122,7 +19409,7 @@
 		(fields_autoplaced yes)
 		(uuid "fc8ce90a-2130-4206-b408-6790a937b936")
 		(property "Reference" "#PWR010"
-			(at 195.58 102.87 0)
+			(at 189.23 125.73 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19133,7 +19420,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 198.12 102.8699 90)
+			(at 191.77 125.7299 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -19144,7 +19431,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 201.93 102.87 0)
+			(at 195.58 125.73 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19155,7 +19442,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 201.93 102.87 0)
+			(at 195.58 125.73 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19166,7 +19453,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 201.93 102.87 0)
+			(at 195.58 125.73 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

@@ -8,6 +8,11 @@ import network
 import time
 import umail
 
+import _thread
+
+import socket
+import json
+
 
 # ============================================================
 # GENERAL SETUP
@@ -19,8 +24,8 @@ led = Pin("LED", Pin.OUT)
 # EMAIL ALERT SETTINGS
 # ============================================================
 
-WIFI_SSID = "OPPO A3x"
-WIFI_PASSWORD = "liverpooldamu"
+WIFI_SSID = "Infinix HOT 50 Pro+"
+WIFI_PASSWORD = "Dr.Waithira"
 
 sender_email = "mitchjaga@gmail.com"
 sender_name = "Smart Toilet"
@@ -50,9 +55,9 @@ poop_email_sent = False
 #   40 mm  = full  = 100%
 # ============================================================
 
-URINE_EMPTY_LEVEL_MM = 500
-POOP_EMPTY_LEVEL_MM = 800
-FULL_LEVEL_MM = 40
+URINE_EMPTY_LEVEL_MM = 450
+POOP_EMPTY_LEVEL_MM = 468
+FULL_LEVEL_MM = 20
 
 # Ultrasonic SENSOR STABILITY FILTER SETTINGS
 
@@ -123,22 +128,56 @@ bulb_relay.value(0)
 
 
 # ============================================================
-# L293D MOTOR DRIVER SETUP
-# L293D 1A    -> Pico GP20
-# L293D 2A    -> Pico GP22
-# L293D EN1,2 -> Pico GP18 PWM
+# SERVO MOTOR GATE SETUP
+# GP6 servo: 180 degrees closed, 90 degrees open
+# GP7 servo: 0 degrees closed, 90 degrees open
 # ============================================================
 
-motor_1A = Pin(20, Pin.OUT)
-motor_2A = Pin(22, Pin.OUT)
+servo_gp6 = PWM(Pin(6))
+servo_gp7 = PWM(Pin(7))
 
-motor_enable = PWM(Pin(18))
-motor_enable.freq(1000)   # 1 kHz PWM frequency
+servo_gp6.freq(50)
+servo_gp7.freq(50)
 
-# Start motor OFF
-motor_1A.value(0)
-motor_2A.value(0)
-motor_enable.duty_u16(0)
+# ============================================================
+# FLOOR SWITCH DEBOUNCE SETTINGS
+# ============================================================
+
+FLOOR_DEBOUNCE_MS = 300
+
+last_raw_floor_state = floor_switch_1.value()
+debounced_floor_state = last_raw_floor_state
+last_floor_change_time = ticks_ms()
+
+
+# ============================================================
+# GATE STATE SETTINGS
+# ============================================================
+
+GATE_STATE_FILE = "gate_state.txt"
+
+GATE_OPEN = "OPEN"
+GATE_CLOSED = "CLOSED"
+
+current_gate_state = GATE_CLOSED
+
+
+# ============================================================
+# NON-BLOCKING FLUSH STATE MACHINE SETTINGS
+# ============================================================
+
+FLUSH_IDLE = 0
+FLUSH_WAITING = 1
+FLUSH_VALVE_ONLY = 2
+FLUSH_PUMP_AND_VALVE = 3
+FLUSH_CLOSING_GATE = 4
+
+flush_state = FLUSH_IDLE
+flush_state_start_time = 0
+
+FLUSH_WAIT_BEFORE_WATER_MS = 5000
+VALVE_ONLY_TIME_MS = 1500
+PUMP_AND_VALVE_TIME_MS = 4000
 
 # ============================================================
 # OLED DISPLAY SETUP
@@ -150,6 +189,67 @@ i2c = I2C(0, sda=Pin(16), scl=Pin(17), freq=400000)
 display = sh1106.SH1106_I2C(128, 64, i2c, None, 0x3c)
 
 
+# ============================================================
+# DASHBOARD STATUS SENDING
+# ============================================================
+
+shared_status = {
+    "poopTankLevel": 0,
+    "urineTankLevel": 0,
+    "userCount": 0,
+    "solenoidValve": False,
+    "bulbRelay": False,
+    "batteryLevel": 100
+}
+
+# ============================================================
+# FACIAL RECOGNITION WELCOME MESSAGE
+# ============================================================
+
+latest_recognized_name = None
+latest_recognition_confidence = 0
+
+welcome_display_until = 0
+WELCOME_DISPLAY_TIME_MS = 3000
+
+last_welcomed_name = None
+
+
+def update_shared_status(urine_level, poop_level):
+    """
+    Updates the status values that the dashboard reads.
+
+    Pico sends:
+        - poopTankLevel
+        - urineTankLevel
+        - userCount
+        - solenoidValve
+        - bulbRelay
+        - batteryLevel
+
+    NOTE:
+        shared_status["solenoidValve"] is used by the frontend
+        as the separation gate status.
+
+        True  = separation gate open
+        False = separation gate closed
+
+        Do not overwrite it using solenoid_valve_relay.value(),
+        because that relay is the water valve, not the separation gate.
+    """
+
+    if urine_level is not None:
+        shared_status["urineTankLevel"] = urine_level
+
+    if poop_level is not None:
+        shared_status["poopTankLevel"] = poop_level
+
+    shared_status["userCount"] = user_count
+    shared_status["bulbRelay"] = bool(bulb_relay.value())
+
+    # No battery sensor for now, so send fixed value
+    shared_status["batteryLevel"] = 100
+
 def read_switch_states():
     floor_state = floor_switch_1.value()
     door_state = door_switch_1.value()
@@ -157,6 +257,41 @@ def read_switch_states():
 
     return floor_state, door_state, lock_state
 
+def switch_state_text(value):
+    """
+    With Pin.PULL_UP:
+        0 = ON / pressed / closed
+        1 = OFF / open / released
+    """
+
+    if value == 0:
+        return "ON "
+    else:
+        return "OFF"
+
+
+def show_live_switch_status(floor_state, door_state, lock_state):
+    """
+    Displays live switch states on the OLED for debugging.
+    """
+
+    display.fill(0)
+
+    display.text("Switch Debug", 0, 0)
+
+    display.text("Floor:", 0, 16)
+    display.text(switch_state_text(floor_state), 64, 16)
+    display.text("GP2", 96, 16)
+
+    display.text("Door:", 0, 32)
+    display.text(switch_state_text(door_state), 64, 32)
+    display.text("GP4", 96, 32)
+
+    display.text("Lock:", 0, 48)
+    display.text(switch_state_text(lock_state), 64, 48)
+    display.text("GP5", 96, 48)
+
+    display.show()
 
 MOTOR_QUARTER_SPEED = 16384
 MOTOR_HALF_SPEED = 32768   # 50% duty cycle
@@ -164,26 +299,304 @@ MOTOR_FULL_SPEED = 65535   # 100% duty cycle
 MOTOR_OFF = 0
 
 
-def motor_stop():
-    motor_enable.duty_u16(MOTOR_OFF)
-    motor_1A.value(0)
-    motor_2A.value(0)
-    print("Motor: STOP")
+def set_angle(servo, angle):
+    """
+    Moves a servo to a given angle from 0 to 180 degrees.
+    """
+
+    min_duty = 1638   # approximately 0 degrees
+    max_duty = 8192   # approximately 180 degrees
+
+    duty = int(min_duty + (angle / 180.0) * (max_duty - min_duty))
+    servo.duty_u16(duty)
 
 
-def motor_clockwise():
-    motor_1A.value(1)
-    motor_2A.value(0)
-    motor_enable.duty_u16(MOTOR_HALF_SPEED)
-    print("Motor: CLOCKWISE at half speed")
+def move_one_servo(servo, start_angle, end_angle, delay=0.005):
+    """
+    Moves one servo slowly from start_angle to end_angle.
+    """
+
+    if start_angle < end_angle:
+        for angle in range(start_angle, end_angle + 1):
+            set_angle(servo, angle)
+            time.sleep(delay)
+    else:
+        for angle in range(start_angle, end_angle - 1, -1):
+            set_angle(servo, angle)
+            time.sleep(delay)
 
 
-def motor_anticlockwise():
-    motor_1A.value(0)
-    motor_2A.value(1)
-    motor_enable.duty_u16(MOTOR_HALF_SPEED)
-    print("Motor: ANTI-CLOCKWISE at half speed")
+def open_both_servos(delay=0.005):
+    """
+    Opens the separation gate.
 
+    Opening:
+    1. GP6 moves first from 180 to 170.
+    2. Then GP6 and GP7 open together.
+
+    GP6: 180 closed -> 90 open
+    GP7: 0 closed   -> 90 open
+    """
+
+    print("Opening gate: GP6 starts first")
+
+    move_one_servo(servo_gp6, 180, 170, delay)
+
+    print("Opening gate: both servos moving together")
+
+    gp6_angle = 170
+    gp7_angle = 0
+
+    while gp6_angle >= 90 or gp7_angle <= 90:
+
+        if gp6_angle >= 90:
+            set_angle(servo_gp6, gp6_angle)
+            gp6_angle -= 1
+
+        if gp7_angle <= 90:
+            set_angle(servo_gp7, gp7_angle)
+            gp7_angle += 1
+
+        time.sleep(delay)
+
+    shared_status["solenoidValve"] = True
+    save_gate_state(GATE_OPEN)
+    print("Separation gate OPEN")
+
+
+def close_both_servos(delay=0.005):
+    """
+    Closes the separation gate.
+
+    Closing:
+    1. GP7 moves first from 90 to 80.
+    2. Then GP7 and GP6 close together.
+
+    GP7: 90 open -> 0 closed
+    GP6: 90 open -> 180 closed
+    """
+
+    print("Closing gate: GP7 starts first")
+
+    move_one_servo(servo_gp7, 90, 80, delay)
+
+    print("Closing gate: both servos moving together")
+
+    gp7_angle = 80
+    gp6_angle = 90
+
+    while gp7_angle >= 0 or gp6_angle <= 180:
+
+        if gp7_angle >= 0:
+            set_angle(servo_gp7, gp7_angle)
+            gp7_angle -= 1
+
+        if gp6_angle <= 180:
+            set_angle(servo_gp6, gp6_angle)
+            gp6_angle += 1
+
+        time.sleep(delay)
+
+    shared_status["solenoidValve"] = False
+    save_gate_state(GATE_CLOSED)
+    print("Separation gate CLOSED")
+
+def save_gate_state(state):
+    """
+    Saves the last known gate state.
+    """
+
+    try:
+        file = open(GATE_STATE_FILE, "w")
+        file.write(state)
+        file.close()
+    except:
+        print("Error saving gate state")
+
+
+def load_gate_state():
+    """
+    Loads the last known gate state.
+    """
+
+    try:
+        file = open(GATE_STATE_FILE, "r")
+        state = file.read()
+        file.close()
+
+        if state == GATE_OPEN:
+            return GATE_OPEN
+
+        if state == GATE_CLOSED:
+            return GATE_CLOSED
+
+        return GATE_CLOSED
+
+    except:
+        return GATE_CLOSED
+
+
+def startup_move_gate_to_known_position():
+    """
+    Moves the separation gate to a known CLOSED position during startup.
+
+    Note:
+    Standard servos do not provide position feedback to the Pico.
+    So this uses the last saved gate state.
+
+    If the gate was last known OPEN, it closes slowly.
+    If it was last known CLOSED, it commands the closed angles directly.
+    """
+
+    global current_gate_state
+
+    current_gate_state = load_gate_state()
+
+    print("Startup gate state:", current_gate_state)
+
+    # Always make sure pump and valve are OFF at startup
+    water_pump_relay.value(0)
+    solenoid_valve_relay.value(0)
+
+    if current_gate_state == GATE_OPEN:
+        print("Gate was last open. Closing gently at startup.")
+        close_both_servos(delay=0.01)
+
+    else:
+        print("Gate was last closed. Setting closed servo positions.")
+        set_angle(servo_gp6, 180)
+        set_angle(servo_gp7, 0)
+
+    current_gate_state = GATE_CLOSED
+    shared_status["solenoidValve"] = False
+    save_gate_state(GATE_CLOSED)
+
+    sleep_ms(1000)
+
+
+def update_floor_switch_debounce(raw_floor_state):
+    """
+    Debounces the floor switch.
+
+    Returns the debounced floor state only after the raw state
+    has remained stable for FLOOR_DEBOUNCE_MS.
+    """
+
+    global last_raw_floor_state
+    global debounced_floor_state
+    global last_floor_change_time
+
+    if raw_floor_state != last_raw_floor_state:
+        last_raw_floor_state = raw_floor_state
+        last_floor_change_time = ticks_ms()
+
+    if ticks_diff(ticks_ms(), last_floor_change_time) >= FLOOR_DEBOUNCE_MS:
+        debounced_floor_state = last_raw_floor_state
+
+    return debounced_floor_state
+
+
+def cancel_flush_sequence():
+    """
+    Cancels any ongoing flush sequence and turns pump and valve OFF.
+    """
+
+    global flush_state
+
+    if flush_state != FLUSH_IDLE:
+        print("Cancelling flush sequence")
+
+    water_pump_relay.value(0)
+    solenoid_valve_relay.value(0)
+
+    flush_state = FLUSH_IDLE
+
+
+def start_flush_close_sequence():
+    """
+    Starts the non-blocking flush and close sequence.
+    This does not pause the main loop.
+    """
+
+    global flush_state
+    global flush_state_start_time
+
+    if flush_state != FLUSH_IDLE:
+        print("Flush sequence already running")
+        return
+
+    print("Starting non-blocking flush sequence")
+    print("Waiting 5 seconds before opening water valve")
+
+    flush_state = FLUSH_WAITING
+    flush_state_start_time = ticks_ms()
+
+
+def process_flush_close_sequence(current_floor_state):
+    """
+    Processes the flush and gate-close sequence without blocking the main loop.
+
+    Sequence:
+    1. Wait 5 seconds
+    2. Open valve
+    3. Wait 1.5 seconds
+    4. Start pump
+    5. Run pump and valve for 4 seconds
+    6. Turn pump and valve OFF
+    7. Close gate using servos
+    """
+
+    global flush_state
+    global flush_state_start_time
+    global current_gate_state
+
+    now = ticks_ms()
+
+    # If someone steps back on the floor during the sequence, stop flushing.
+    if current_floor_state == 0 and flush_state != FLUSH_IDLE:
+        print("Floor pressed during flush sequence. Stopping flush.")
+        cancel_flush_sequence()
+        return
+
+    if flush_state == FLUSH_IDLE:
+        return
+
+    if flush_state == FLUSH_WAITING:
+        if ticks_diff(now, flush_state_start_time) >= FLUSH_WAIT_BEFORE_WATER_MS:
+            print("Opening water valve")
+            solenoid_valve_relay.value(1)
+
+            flush_state = FLUSH_VALVE_ONLY
+            flush_state_start_time = now
+
+    elif flush_state == FLUSH_VALVE_ONLY:
+        if ticks_diff(now, flush_state_start_time) >= VALVE_ONLY_TIME_MS:
+            print("Starting water pump")
+            water_pump_relay.value(1)
+
+            flush_state = FLUSH_PUMP_AND_VALVE
+            flush_state_start_time = now
+
+    elif flush_state == FLUSH_PUMP_AND_VALVE:
+        if ticks_diff(now, flush_state_start_time) >= PUMP_AND_VALVE_TIME_MS:
+            print("Turning pump and valve OFF")
+            water_pump_relay.value(0)
+            solenoid_valve_relay.value(0)
+
+            flush_state = FLUSH_CLOSING_GATE
+            flush_state_start_time = now
+
+    elif flush_state == FLUSH_CLOSING_GATE:
+        print("Closing separation gate using servos")
+
+        close_both_servos(delay=0.005)
+
+        current_gate_state = GATE_CLOSED
+        shared_status["solenoidValve"] = False
+        save_gate_state(GATE_CLOSED)
+
+        flush_state = FLUSH_IDLE
+        print("Flush sequence complete")
 
 def init_display():
     display.fill(0)
@@ -191,6 +604,37 @@ def init_display():
     display.text("Please wait...", 0, 16)
     display.show()
     sleep_ms(1000)
+    
+def show_welcome_message(name, confidence):
+    """
+    Shows a short welcome message on the OLED after
+    the React dashboard sends POST /recognition.
+    """
+
+    display.fill(0)
+
+    display.text("Welcome", 0, 0)
+
+    # SH1106 text is small; split long names into two lines
+    if len(name) <= 16:
+        display.text(name, 0, 22)
+    else:
+        display.text(name[:16], 0, 18)
+        display.text(name[16:32], 0, 32)
+
+    display.text(str(confidence) + "% match", 0, 52)
+    display.show()
+
+
+def welcome_message_is_active():
+    """
+    Returns True while the welcome message should still be shown.
+    """
+
+    return (
+        latest_recognized_name is not None and
+        ticks_diff(welcome_display_until, ticks_ms()) > 0
+    )
 
 def distance_to_level_percent(distance_mm, empty_level_mm):
     """
@@ -569,79 +1013,81 @@ def update_stable_distance(new_distance, readings_buffer, last_stable_distance):
     # If readings are not stable, keep previous stable value
     return last_stable_distance
 
+
 def run_floor_on_to_off_action():
     """
-    Runs when floor switch changes from ON to OFF.
-    ON  = 0
-    OFF = 1
+    Runs immediately when the floor switch is pressed.
+
+    Floor pressed = 0
 
     Action:
-    Rotate motor anti-clockwise for 2.5 seconds.
+        Open the separation gate using the two servo motors.
     """
 
-    print("Floor switch changed from ON to OFF")
-    print("Running anti-clockwise motor action")
+    global current_gate_state
 
-    motor_anticlockwise()
-    sleep_ms(2500)
-    motor_stop()
+    print("Floor switch pressed")
+    print("Opening separation gate using servos")
 
+    # If a flush sequence had started, cancel it because someone is back on the floor
+    cancel_flush_sequence()
+
+    if current_gate_state != GATE_OPEN:
+        open_both_servos(delay=0.005)
+        current_gate_state = GATE_OPEN
+        shared_status["solenoidValve"] = True
+        save_gate_state(GATE_OPEN)
+    else:
+        print("Gate already open")
 
 def run_floor_off_to_on_action():
     """
-    Runs when floor switch changes from OFF to ON.
-    ON  = 0
-    OFF = 1
+    Runs when the floor switch is released.
+
+    Floor released = 1
 
     Action:
-    1. Wait 5 seconds
-    2. Turn ON water pump relay and solenoid valve relay for 4 seconds
-    3. Turn both relays OFF
-    4. Wait 1 second
-    5. Rotate motor clockwise for 2.5 seconds
-    6. Stop motor
+        Starts the non-blocking flush and close sequence.
     """
 
-    print("Floor switch changed from OFF to ON")
-    print("Waiting 5 seconds before pump and valve")
+    print("Floor switch released")
+    print("Starting flush and close sequence")
 
-    sleep_ms(5000)
-
-    print("Turning pump and solenoid valve ON for 4 seconds")
-    water_pump_relay.value(1)
-    solenoid_valve_relay.value(1)
-
-    sleep_ms(4000)
-
-    print("Turning pump and solenoid valve OFF")
-    water_pump_relay.value(0)
-    solenoid_valve_relay.value(0)
-
-    print("Waiting 1 second before clockwise motor rotation")
-    sleep_ms(1000)
-
-    print("Running clockwise motor action")
-    motor_clockwise()
-    sleep_ms(2500)
-    motor_stop()
-
+    start_flush_close_sequence()
 
 def handle_floor_switch_state_change(current_floor_state):
     """
-    Checks whether floor switch state has changed.
-    Motor/relay actions only run when there is a change.
+    Uses the live floor switch state to control the separation gate.
+
+    With Pin.PULL_UP:
+        Floor pressed / person standing = 0
+        Floor released / no person      = 1
+
+    Floor released -> pressed:
+        Open the separation gate using the two servo motors.
+
+    Floor pressed -> released:
+        Wait, flush, then close the separation gate.
     """
 
     global previous_floor_state
 
     if current_floor_state != previous_floor_state:
 
-        # ON to OFF
-        if previous_floor_state == 0 and current_floor_state == 1:
+        # Floor released -> pressed
+        # Someone has stepped onto the floor
+        if previous_floor_state == 1 and current_floor_state == 0:
+            print("Floor switch changed from RELEASED to PRESSED")
+            print("Opening separation gate")
+
             run_floor_on_to_off_action()
 
-        # OFF to ON
-        elif previous_floor_state == 1 and current_floor_state == 0:
+        # Floor pressed -> released
+        # Someone has stepped off the floor
+        elif previous_floor_state == 0 and current_floor_state == 1:
+            print("Floor switch changed from PRESSED to RELEASED")
+            print("Running flush and closing sequence")
+
             run_floor_off_to_on_action()
 
         previous_floor_state = current_floor_state
@@ -692,25 +1138,30 @@ def increment_user_count():
 def handle_user_counting(door_state, lock_state):
     """
     Counts a toilet user when:
-    1. Door switch changes from OFF to ON
+    1. Door changes from OPEN to CLOSED
     2. Then lock switch changes from OFF to ON
 
-    With Pin.PULL_UP:
-        ON  = 0
-        OFF = 1
+    Actual door switch behavior from testing:
+        Door open   = 0 = ON
+        Door closed = 1 = OFF
+
+    Lock switch behavior:
+        Lock ON/pressed = 0
+        Lock OFF        = 1
     """
 
     global previous_door_state
     global previous_lock_state
     global door_opened_before_lock
 
-    # Detect door changing from OFF to ON
-    if previous_door_state == 1 and door_state == 0:
+    # Detect door changing from OPEN to CLOSED
+    # Door open = 0, door closed = 1
+    if previous_door_state == 0 and door_state == 1:
         door_opened_before_lock = True
-        print("Door changed from OFF to ON")
+        print("Door changed from OPEN to CLOSED")
         print("Waiting for lock switch to change from OFF to ON")
 
-    # Detect lock changing from OFF to ON after door event
+    # Detect lock changing from OFF to ON after door has closed
     if door_opened_before_lock:
         if previous_lock_state == 1 and lock_state == 0:
             print("Lock changed from OFF to ON")
@@ -721,12 +1172,10 @@ def handle_user_counting(door_state, lock_state):
             # Reset sequence so this person is only counted once
             door_opened_before_lock = False
 
-    # Optional reset:
-    # If the door goes back OFF before the lock is turned ON,
-    # cancel the pending count.
+    # Cancel sequence if door opens again before locking
     if door_opened_before_lock:
-        if previous_door_state == 0 and door_state == 1:
-            print("Door went back OFF before lock was ON")
+        if previous_door_state == 1 and door_state == 0:
+            print("Door opened again before lock was ON")
             print("User count sequence cancelled")
             door_opened_before_lock = False
 
@@ -773,36 +1222,95 @@ def save_email_state(filename, state):
     except:
         print("Error saving email state:", filename)
 
+def wifi_status_text(status):
+    if status == network.STAT_IDLE:
+        return "IDLE"
+    elif status == network.STAT_CONNECTING:
+        return "CONNECTING"
+    elif status == network.STAT_WRONG_PASSWORD:
+        return "WRONG PASSWORD"
+    elif status == network.STAT_NO_AP_FOUND:
+        return "NO AP FOUND"
+    elif status == network.STAT_CONNECT_FAIL:
+        return "CONNECT FAIL"
+    elif status == network.STAT_GOT_IP:
+        return "GOT IP"
+    else:
+        return "UNKNOWN: " + str(status)
+
+
+def show_wifi_status(line1, line2=""):
+    display.fill(0)
+    display.text("WiFi Debug", 0, 0)
+    display.text(line1[:16], 0, 20)
+    display.text(line2[:16], 0, 40)
+    display.show()
+
+
 def connect_to_internet(ssid, password):
     wlan = network.WLAN(network.STA_IF)
+
+    wlan.active(False)
+    sleep_ms(500)
+
     wlan.active(True)
+    sleep_ms(1000)
+
+    print("WiFi active:", wlan.active())
+    print("Connecting to:", ssid)
+
+    show_wifi_status("Connecting to", ssid)
 
     if wlan.isconnected():
+        ip = wlan.ifconfig()[0]
         print("Already connected")
-        print("IP address:", wlan.ifconfig()[0])
+        print("IP address:", ip)
+        show_wifi_status("Connected", ip)
         return True
 
     wlan.connect(ssid, password)
 
-    max_wait = 20
+    max_wait = 30
 
     while max_wait > 0:
-        if wlan.status() < 0 or wlan.status() >= 3:
-            break
+        status = wlan.status()
+        print("WiFi status:", status, wifi_status_text(status))
+
+        show_wifi_status(
+            wifi_status_text(status),
+            "Wait " + str(max_wait)
+        )
+
+        if status == network.STAT_GOT_IP:
+            ip = wlan.ifconfig()[0]
+            print("Connected")
+            print("IP address:", ip)
+            show_wifi_status("Connected", ip)
+            return True
+
+        if status == network.STAT_WRONG_PASSWORD:
+            print("Wrong WiFi password")
+            show_wifi_status("Wrong password", "")
+            return False
+
+        if status == network.STAT_NO_AP_FOUND:
+            print("WiFi network not found")
+            show_wifi_status("No AP found", ssid)
+            return False
+
+        if status == network.STAT_CONNECT_FAIL:
+            print("Connection failed")
+            show_wifi_status("Connect failed", "")
+            return False
 
         max_wait -= 1
-        print("waiting for connection...")
         time.sleep(1)
 
-    if wlan.status() != 3:
-        print("WiFi status:", wlan.status())
-        print("Network connection failed")
-        return False
-    else:
-        print("connected")
-        print("WiFi status:", wlan.status())
-        print("IP address:", wlan.ifconfig()[0])
-        return True
+    print("WiFi connection timed out")
+    print("Final WiFi status:", wlan.status(), wifi_status_text(wlan.status()))
+    show_wifi_status("WiFi timeout", wifi_status_text(wlan.status()))
+
+    return False
 
 def send_email_alert(tank_name, tank_level, tank_distance):
     """
@@ -888,17 +1396,21 @@ def handle_bulb_control(door_state, lock_state):
     """
     Controls ONLY the bulb relay.
 
+    Actual door switch behavior from testing:
+        Door open   = 0 = ON
+        Door closed = 1 = OFF
+
+    Lock switch behavior:
+        Lock ON/pressed = 0
+        Lock OFF        = 1
+
     Bulb turns ON when:
-    1. Door switch changes from OFF to ON
-    2. Then lock switch changes from OFF to ON
+    1. Door changes from OPEN to CLOSED
+    2. Then lock changes from OFF to ON
 
     Bulb turns OFF when:
-    1. Door switch changes from ON to OFF
-    2. Then door switch changes from OFF to ON
-
-    With Pin.PULL_UP:
-        ON  = 0
-        OFF = 1
+    1. Door changes from CLOSED to OPEN
+    2. Then door changes from OPEN to CLOSED
     """
 
     global previous_door_state_for_bulb
@@ -909,15 +1421,16 @@ def handle_bulb_control(door_state, lock_state):
 
     # --------------------------------------------------------
     # TURN BULB ON SEQUENCE
-    # Door OFF -> ON, then Lock OFF -> ON
+    # Door OPEN -> CLOSED, then Lock OFF -> ON
+    # Door open = 0, Door closed = 1
     # --------------------------------------------------------
 
     if not bulb_is_on:
 
-        # Step 1: Door changes from OFF to ON
-        if previous_door_state_for_bulb == 1 and door_state == 0:
+        # Step 1: Door changes from OPEN to CLOSED
+        if previous_door_state_for_bulb == 0 and door_state == 1:
             waiting_for_lock_to_turn_bulb_on = True
-            print("Bulb sequence: Door changed from OFF to ON")
+            print("Bulb sequence: Door changed from OPEN to CLOSED")
             print("Waiting for lock switch to change from OFF to ON")
 
         # Step 2: Lock changes from OFF to ON
@@ -930,51 +1443,286 @@ def handle_bulb_control(door_state, lock_state):
                 print("Bulb sequence: Lock changed from OFF to ON")
                 print("Bulb relay: ON")
 
-        # Cancel ON sequence if door goes back OFF before lock is turned ON
+        # Cancel ON sequence if door opens again before lock is turned ON
         if waiting_for_lock_to_turn_bulb_on:
-            if previous_door_state_for_bulb == 0 and door_state == 1:
+            if previous_door_state_for_bulb == 1 and door_state == 0:
                 waiting_for_lock_to_turn_bulb_on = False
-                print("Bulb ON sequence cancelled")
+                print("Bulb ON sequence cancelled because door opened again")
 
     # --------------------------------------------------------
     # TURN BULB OFF SEQUENCE
-    # Door ON -> OFF, then Door OFF -> ON
-    # This means the person opened and then closed the door.
+    # Door CLOSED -> OPEN, then Door OPEN -> CLOSED
+    # This means the person opened and then closed the door when leaving.
     # --------------------------------------------------------
 
     if bulb_is_on:
 
-        # Step 1: Door changes from ON to OFF
-        if previous_door_state_for_bulb == 0 and door_state == 1:
+        # Step 1: Door changes from CLOSED to OPEN
+        if previous_door_state_for_bulb == 1 and door_state == 0:
             waiting_for_door_to_close_to_turn_bulb_off = True
-            print("Bulb OFF sequence: Door changed from ON to OFF")
-            print("Waiting for door switch to change from OFF to ON")
+            print("Bulb OFF sequence: Door changed from CLOSED to OPEN")
+            print("Waiting for door to close again")
 
-        # Step 2: Door changes from OFF to ON
+        # Step 2: Door changes from OPEN to CLOSED
         if waiting_for_door_to_close_to_turn_bulb_off:
-            if previous_door_state_for_bulb == 1 and door_state == 0:
+            if previous_door_state_for_bulb == 0 and door_state == 1:
                 bulb_relay.value(0)
                 bulb_is_on = False
                 waiting_for_door_to_close_to_turn_bulb_off = False
 
-                print("Bulb OFF sequence: Door changed from OFF to ON")
+                print("Bulb OFF sequence: Door changed from OPEN to CLOSED")
                 print("Bulb relay: OFF")
 
     previous_door_state_for_bulb = door_state
     previous_lock_state_for_bulb = lock_state
 
 # ============================================================
+# DASHBOARD HTTP SERVER
+# ============================================================
+
+CORS_HEADERS = (
+    "Access-Control-Allow-Origin: *\r\n"
+    "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
+    "Access-Control-Allow-Headers: Content-Type\r\n"
+)
+
+
+def http_respond(conn, status_line, body=""):
+    response = (
+        "HTTP/1.1 " + status_line + "\r\n"
+        + CORS_HEADERS
+        + "Content-Type: application/json\r\n"
+        + "Connection: close\r\n"
+        + "Content-Length: " + str(len(body)) + "\r\n"
+        + "\r\n"
+        + body
+    )
+
+    conn.send(response.encode())
+
+def handle_recognition_payload(body):
+    """
+    Handles JSON sent from the React facial recognition dashboard.
+
+    Expected JSON:
+    {
+        "name": "Mitch Macharia",
+        "confidence": 84,
+        "ts": 1234567890
+    }
+
+    The Pico only shows the welcome message if the recognized name
+    is different from the last welcomed person.
+    """
+
+    global latest_recognized_name
+    global latest_recognition_confidence
+    global welcome_display_until
+    global last_welcomed_name
+
+    try:
+        data = json.loads(body)
+
+        name = data.get("name", "")
+        confidence = data.get("confidence", 0)
+
+        if not name:
+            return False, "Missing name"
+
+        name = str(name)
+
+        try:
+            confidence = int(confidence)
+        except:
+            confidence = 0
+
+        latest_recognized_name = name
+        latest_recognition_confidence = confidence
+
+        print("Recognition received:")
+        print("Name:", latest_recognized_name)
+        print("Confidence:", latest_recognition_confidence)
+
+        # Do not redisplay welcome message for the same person
+        if name == last_welcomed_name:
+            print("Same person already welcomed. Welcome message not repeated.")
+            return True, "Same person already welcomed"
+
+        # New person detected, show welcome message
+        last_welcomed_name = name
+        welcome_display_until = ticks_ms() + WELCOME_DISPLAY_TIME_MS
+
+        print("New person welcomed:", name)
+
+        return True, "Recognition received"
+
+    except Exception as e:
+        print("Recognition JSON error:", e)
+        return False, "Invalid recognition JSON"
+
+def handle_http_client(conn):
+    try:
+        conn.settimeout(2)
+
+        request = conn.recv(1024)
+
+        if not request:
+            return
+
+        request_text = request.decode()
+        header_end = request_text.find("\r\n\r\n")
+
+        if header_end == -1:
+            http_respond(
+                conn,
+                "400 Bad Request",
+                json.dumps({"error": "bad request"})
+            )
+            return
+
+        headers_text = request_text[:header_end]
+        body = request_text[header_end + 4:]
+
+        lines = headers_text.split("\r\n")
+        request_line = lines[0]
+        parts = request_line.split(" ")
+
+        if len(parts) < 2:
+            http_respond(
+                conn,
+                "400 Bad Request",
+                json.dumps({"error": "bad request"})
+            )
+            return
+
+        method = parts[0]
+        path = parts[1]
+
+        print("REQUEST RECEIVED:", method, path)
+
+        # Read Content-Length for POST body
+        content_length = 0
+
+        for line in lines[1:]:
+            lower_line = line.lower()
+
+            if lower_line.startswith("content-length:"):
+                try:
+                    content_length = int(line.split(":", 1)[1].strip())
+                except:
+                    content_length = 0
+
+        # If body was not fully received in first recv(), read the rest
+        while len(body) < content_length:
+            more_data = conn.recv(1024)
+
+            if not more_data:
+                break
+
+            body += more_data.decode()
+
+        if method == "OPTIONS":
+            http_respond(conn, "204 No Content", "")
+
+        elif method == "GET" and path == "/status":
+            response_body = json.dumps(shared_status)
+            http_respond(conn, "200 OK", response_body)
+
+        elif method == "POST" and path == "/recognition":
+            success, message = handle_recognition_payload(body)
+
+            if success:
+                http_respond(
+                    conn,
+                    "200 OK",
+                    json.dumps({
+                        "ok": True,
+                        "message": message,
+                        "name": latest_recognized_name,
+                        "confidence": latest_recognition_confidence
+                    })
+                )
+            else:
+                http_respond(
+                    conn,
+                    "400 Bad Request",
+                    json.dumps({
+                        "ok": False,
+                        "error": message
+                    })
+                )
+
+        else:
+            http_respond(
+                conn,
+                "404 Not Found",
+                json.dumps({"error": "not found"})
+            )
+
+    except Exception as e:
+        print("HTTP error:", e)
+
+    finally:
+        try:
+            conn.close()
+        except:
+            pass
+
+
+def start_dashboard_server():
+    """
+    Starts a small HTTP server on the Pico W.
+    The dashboard can read status using:
+
+        GET /status
+    """
+
+    try:
+        addr = socket.getaddrinfo("0.0.0.0", 80)[0][-1]
+
+        server = socket.socket()
+        server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server.bind(addr)
+        server.listen(2)
+
+        print("Dashboard server running on port 80")
+
+    except Exception as e:
+        print("Failed to start dashboard server:", e)
+        return
+
+    while True:
+        try:
+            conn, client = server.accept()
+            handle_http_client(conn)
+
+        except Exception as e:
+            print("Dashboard server accept error:", e)
+
+# ============================================================
 # FLOOR SWITCH STATE TRACKING
 # ============================================================
 
 
-previous_floor_state = floor_switch_1.value()
+previous_floor_state = update_floor_switch_debounce(floor_switch_1.value())
 
 # ============================================================
 # MAIN LOOP
 # ============================================================
 
 init_system()
+
+# Start with separation gate closed
+# Move gate gently to known closed position during startup
+startup_move_gate_to_known_position()
+
+# If someone is already standing on the floor at startup, open the gate
+if update_floor_switch_debounce(floor_switch_1.value()) == 0:
+    print("Floor already pressed at startup. Opening gate.")
+    open_both_servos(delay=0.005)
+    current_gate_state = GATE_OPEN
+    shared_status["solenoidValve"] = True
+    save_gate_state(GATE_OPEN)
 
 user_count = load_user_count()
 print("Saved user count:", user_count)
@@ -988,6 +1736,15 @@ print("Saved poop email state:", poop_email_sent)
 
 # Connect to WiFi
 wifi_connected = connect_to_internet(WIFI_SSID, WIFI_PASSWORD)
+
+if wifi_connected:
+    try:
+        _thread.start_new_thread(start_dashboard_server, ())
+        print("Dashboard server started")
+    except Exception as e:
+        print("Could not start dashboard server:", e)
+else:
+    print("WiFi not connected. Dashboard server not started.")
 
 #run_motor_test_cycle()
 
@@ -1011,13 +1768,23 @@ while True:
     )
 
     # Read switches
-    floor_state, door_state, lock_state = read_switch_states()
+    raw_floor_state, door_state, lock_state = read_switch_states()
+
+    # Debounce floor switch before using it for gate control
+    floor_state = update_floor_switch_debounce(raw_floor_state)
 
     handle_user_counting(door_state, lock_state)
     handle_floor_switch_state_change(floor_state)
+
+    # Continue any non-blocking flush/close sequence
+    process_flush_close_sequence(floor_state)
     
     # Door and lock sequence controls ONLY the bulb relay
     handle_bulb_control(door_state, lock_state)
+    
+    # Always update these, even if tank readings are not stable
+    shared_status["userCount"] = user_count
+    shared_status["bulbRelay"] = bool(bulb_relay.value())
 
     # Print raw readings
     print("Raw urine tank distance:", format_distance(raw_urine_tank_distance))
@@ -1056,6 +1823,8 @@ while True:
             stable_poop_tank_distance,
             POOP_EMPTY_LEVEL_MM
         )
+        
+        update_shared_status(urine_tank_level, poop_tank_level)
 
         if wifi_connected:
             check_tank_email_alerts(
@@ -1068,13 +1837,26 @@ while True:
             print("WiFi not connected. Email alert not sent.")
 
         # Show stable tank levels on OLED
-        show_tank_levels(stable_urine_tank_distance, stable_poop_tank_distance)
+        # Show welcome message if facial recognition was recently received
+        if welcome_message_is_active():
+            show_welcome_message(
+                latest_recognized_name,
+                latest_recognition_confidence
+            )
+        else:
+            show_tank_levels(stable_urine_tank_distance, stable_poop_tank_distance)
 
     else:
-        display.fill(0)
-        display.text("Stabilizing...", 0, 0)
-        display.text("Please wait", 0, 20)
-        display.show()
+        if welcome_message_is_active():
+            show_welcome_message(
+                latest_recognized_name,
+                latest_recognition_confidence
+            )
+        else:
+            display.fill(0)
+            display.text("Stabilizing...", 0, 0)
+            display.text("Please wait", 0, 20)
+            display.show()        
 
     print("--------------------")
     sleep_ms(200)
