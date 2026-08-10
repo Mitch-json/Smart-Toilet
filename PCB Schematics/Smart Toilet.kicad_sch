@@ -4876,6 +4876,12 @@
 		(uuid "2d08544c-2f5d-4f4c-a02d-d9a4e34b5c14")
 	)
 	(junction
+		(at 29.21 180.34)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3a6cc283-049b-494e-bd10-20cc8de7a5a2")
+	)
+	(junction
 		(at 119.38 123.19)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4904,6 +4910,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "68c7e90a-9a72-42a0-b73c-cd0ad253dbbf")
+	)
+	(junction
+		(at 88.9 123.19)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "69343298-f43e-4c2e-a0bd-2d9b0e15ec7e")
 	)
 	(junction
 		(at 217.17 20.32)
@@ -4946,6 +4958,18 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "9e4207b4-e22e-40b3-a97f-1dea6b33d2e1")
+	)
+	(junction
+		(at 99.06 163.83)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "bb6c93be-4325-401b-9ebc-7c70fbeed13f")
+	)
+	(junction
+		(at 96.52 162.56)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "bc840db6-86c7-4a66-878f-30b496b5b465")
 	)
 	(junction
 		(at 26.67 111.76)
@@ -5181,7 +5205,7 @@
 	)
 	(wire
 		(pts
-			(xy 87.63 123.19) (xy 95.25 123.19)
+			(xy 87.63 123.19) (xy 88.9 123.19)
 		)
 		(stroke
 			(width 0)
@@ -5261,7 +5285,7 @@
 	)
 	(wire
 		(pts
-			(xy 93.98 162.56) (xy 109.22 162.56)
+			(xy 93.98 162.56) (xy 96.52 162.56)
 		)
 		(stroke
 			(width 0)
@@ -5691,7 +5715,7 @@
 	)
 	(wire
 		(pts
-			(xy 96.52 163.83) (xy 104.14 163.83)
+			(xy 96.52 163.83) (xy 99.06 163.83)
 		)
 		(stroke
 			(width 0)
@@ -5821,6 +5845,16 @@
 	)
 	(wire
 		(pts
+			(xy 29.21 180.34) (xy 29.21 182.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4b7789f0-a189-4125-abe5-8c5d1eb58ef5")
+	)
+	(wire
+		(pts
 			(xy 154.94 30.48) (xy 146.05 30.48)
 		)
 		(stroke
@@ -5941,7 +5975,7 @@
 	)
 	(wire
 		(pts
-			(xy 33.02 180.34) (xy 22.86 180.34)
+			(xy 33.02 180.34) (xy 29.21 180.34)
 		)
 		(stroke
 			(width 0)
@@ -6191,6 +6225,16 @@
 	)
 	(wire
 		(pts
+			(xy 96.52 160.02) (xy 96.52 162.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6cf7b207-afaa-4c51-8572-96e853cf874d")
+	)
+	(wire
+		(pts
 			(xy 29.21 22.86) (xy 29.21 25.4)
 		)
 		(stroke
@@ -6351,6 +6395,16 @@
 	)
 	(wire
 		(pts
+			(xy 99.06 163.83) (xy 99.06 166.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8a1a1be2-a5eb-4178-b55a-3ee8bb2dddaf")
+	)
+	(wire
+		(pts
 			(xy 19.05 171.45) (xy 22.86 171.45)
 		)
 		(stroke
@@ -6498,6 +6552,16 @@
 			(type default)
 		)
 		(uuid "9878dec1-6e73-4e28-bc25-b40c5fcfbe1e")
+	)
+	(wire
+		(pts
+			(xy 29.21 180.34) (xy 22.86 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "990c5889-8619-4756-bf62-835e4e3af596")
 	)
 	(wire
 		(pts
@@ -6691,6 +6755,16 @@
 	)
 	(wire
 		(pts
+			(xy 88.9 119.38) (xy 88.9 123.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b3c31dc2-c0dd-42c7-8939-1155c3166eb4")
+	)
+	(wire
+		(pts
 			(xy 245.11 35.56) (xy 245.11 39.37)
 		)
 		(stroke
@@ -6811,6 +6885,16 @@
 	)
 	(wire
 		(pts
+			(xy 88.9 123.19) (xy 95.25 123.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c40230c5-d5a7-43a4-9313-50216b46f6f6")
+	)
+	(wire
+		(pts
 			(xy 194.31 106.68) (xy 194.31 109.22)
 		)
 		(stroke
@@ -6861,7 +6945,7 @@
 	)
 	(wire
 		(pts
-			(xy 85.09 124.46) (xy 85.09 127)
+			(xy 85.09 121.92) (xy 85.09 127)
 		)
 		(stroke
 			(width 0)
@@ -6911,6 +6995,16 @@
 	)
 	(wire
 		(pts
+			(xy 96.52 162.56) (xy 109.22 162.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cd51235a-3a58-450b-bff1-965a684bd791")
+	)
+	(wire
+		(pts
 			(xy 255.27 74.93) (xy 255.27 77.47)
 		)
 		(stroke
@@ -6928,6 +7022,16 @@
 			(type default)
 		)
 		(uuid "cfb64dfa-2b08-46eb-8e0b-92a829ecb245")
+	)
+	(wire
+		(pts
+			(xy 99.06 163.83) (xy 104.14 163.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d005eb7f-3d80-4c65-bbc7-66c2646afd0d")
 	)
 	(wire
 		(pts
@@ -9162,7 +9266,7 @@
 		(dnp no)
 		(uuid "00b83bc8-f5cd-4967-b363-c9ab7a781e9d")
 		(property "Reference" "J14"
-			(at 23.114 183.134 0)
+			(at 17.78 179.578 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9172,7 +9276,7 @@
 			)
 		)
 		(property "Value" "Solenoid1_pins"
-			(at 23.114 185.674 0)
+			(at 17.78 182.118 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10559,6 +10663,84 @@
 			(project "Smart Toilet"
 				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
 					(reference "J11")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+12V")
+		(at 99.06 166.37 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1de314d1-9980-4f42-8fe2-de815dcf3094")
+		(property "Reference" "#PWR027"
+			(at 99.06 162.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+12V"
+			(at 99.06 171.45 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 99.06 166.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 99.06 166.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+12V\""
+			(at 99.06 166.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "161f7fb8-dddc-41ba-abd4-0e51b1da09e8")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "#PWR027")
 					(unit 1)
 				)
 			)
@@ -13967,6 +14149,85 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 96.52 160.02 0)
+		(mirror x)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6689b180-4b49-49af-a6cb-2ed38962bdea")
+		(property "Reference" "#PWR064"
+			(at 96.52 153.67 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 96.52 154.94 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 96.52 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 96.52 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 96.52 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "331c96dc-b89a-495d-ae25-2b2f434a98f5")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "#PWR064")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:D")
 		(at 119.38 132.08 90)
 		(mirror x)
@@ -16282,6 +16543,85 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 85.09 121.92 0)
+		(mirror x)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a326c1b5-09a0-48cf-abcf-a1b7e18291ab")
+		(property "Reference" "#PWR065"
+			(at 85.09 115.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 85.09 116.84 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 85.09 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 85.09 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 85.09 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "dd4e00c7-342d-47dd-af04-e9e14e43b94a")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "#PWR065")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:VCC")
 		(at 151.13 44.45 0)
 		(unit 1)
@@ -16521,84 +16861,6 @@
 			(project "Smart Toilet"
 				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
 					(reference "#PWR058")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+12V")
-		(at 85.09 124.46 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a718040a-b1cf-4198-9283-098ee863d1df")
-		(property "Reference" "#PWR025"
-			(at 85.09 128.27 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "+12V"
-			(at 85.09 119.38 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 85.09 124.46 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 85.09 124.46 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+12V\""
-			(at 85.09 124.46 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "d67fe81d-3401-435a-b167-3081d153d0d3")
-		)
-		(instances
-			(project "Smart Toilet"
-				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
-					(reference "#PWR025")
 					(unit 1)
 				)
 			)
@@ -17976,6 +18238,84 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+12V")
+		(at 88.9 119.38 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d22a239c-dd40-4cfe-bea1-68261e229cb7")
+		(property "Reference" "#PWR025"
+			(at 88.9 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+12V"
+			(at 88.9 114.3 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 88.9 119.38 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 88.9 119.38 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+12V\""
+			(at 88.9 119.38 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "04b8fc23-cdf9-4005-af6c-83937bdb7a73")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "#PWR025")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 29.21 33.02 0)
 		(unit 1)
@@ -18411,6 +18751,84 @@
 			(project "Smart Toilet"
 				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
 					(reference "#PWR016")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+12V")
+		(at 29.21 182.88 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ddf7fadf-a67d-4161-970d-cba1b6c76c5b")
+		(property "Reference" "#PWR028"
+			(at 29.21 179.07 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+12V"
+			(at 29.21 187.96 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 29.21 182.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 29.21 182.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+12V\""
+			(at 29.21 182.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "961db71f-2676-4e79-a250-8bda3e86efc2")
+		)
+		(instances
+			(project "Smart Toilet"
+				(path "/108cbb4f-8a7e-4df5-941a-294b4a06145c"
+					(reference "#PWR028")
 					(unit 1)
 				)
 			)
