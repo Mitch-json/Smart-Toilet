@@ -1,5 +1,5 @@
 from machine import Pin, I2C, UART, PWM
-from utime import sleep_ms, ticks_ms, ticks_diff
+from utime import sleep_ms, sleep_us, ticks_ms, ticks_us, ticks_diff
 import sh1106
 import rp2
 from rp2 import PIO, StateMachine, asm_pio
@@ -24,13 +24,14 @@ led = Pin("LED", Pin.OUT)
 # EMAIL ALERT SETTINGS
 # ============================================================
 
-WIFI_SSID = "Infinix HOT 50 Pro+"
-WIFI_PASSWORD = "Dr.Waithira"
+WIFI_SSID = "4G-MIFI-A1C2"
+WIFI_PASSWORD = "1234567890"
 
 sender_email = "mitchjaga@gmail.com"
 sender_name = "Smart Toilet"
 sender_app_password = "rbch zncz bcjx godz"
-recipient_email = "mmatheri@andrew.cmu.edu" 
+recipient_email_1 = "nancy.matheri@egerton.ac.ke"
+recipient_email_2 = "mmatheri@andrew.cmu.edu"
 
 TANK_ALERT_LEVEL_PERCENT = 80
 
@@ -55,8 +56,8 @@ poop_email_sent = False
 #   40 mm  = full  = 100%
 # ============================================================
 
-URINE_EMPTY_LEVEL_MM = 450
-POOP_EMPTY_LEVEL_MM = 468
+URINE_EMPTY_LEVEL_MM = 965
+POOP_EMPTY_LEVEL_MM = 982
 FULL_LEVEL_MM = 20
 
 # Ultrasonic SENSOR STABILITY FILTER SETTINGS
@@ -75,11 +76,22 @@ stable_poop_tank_distance = None
 # ============================================================
 # SWITCH INPUT SETUP
 # Floor switch 1 -> GP2
+# Floor switch 2 -> GP3
 # Door switch 1  -> GP4
 # Lock switch 1  -> GP5
+#
+# Floor switch behavior from testing:
+#   0 = released
+#   1 = pressed
+#
+# Combined floor logic:
+#   If either floor switch is pressed, floor_state = 1
+#   If both floor switches are released, floor_state = 0
 # ============================================================
 
 floor_switch_1 = Pin(2, Pin.IN, Pin.PULL_UP)
+floor_switch_2 = Pin(3, Pin.IN, Pin.PULL_UP)
+
 door_switch_1 = Pin(4, Pin.IN, Pin.PULL_UP)
 lock_switch_1 = Pin(5, Pin.IN, Pin.PULL_UP)
 
@@ -126,6 +138,23 @@ water_pump_relay.value(0)
 solenoid_valve_relay.value(0)
 bulb_relay.value(0)
 
+# ============================================================
+# FLUSH TANK ULTRASONIC SENSOR SETUP
+# Trigger -> GP10
+# Echo    -> GP11
+#
+# Flush tank is considered EMPTY when distance > 30 cm
+# ============================================================
+
+flush_tank_trig = Pin(10, Pin.OUT)
+flush_tank_echo = Pin(11, Pin.IN)
+
+flush_tank_trig.value(0)
+
+FLUSH_TANK_EMPTY_DISTANCE_CM = 28
+
+no_water_display_until = 0
+NO_WATER_DISPLAY_TIME_MS = 5000
 
 # ============================================================
 # SERVO MOTOR GATE SETUP
@@ -145,9 +174,18 @@ servo_gp7.freq(50)
 
 FLOOR_DEBOUNCE_MS = 300
 
-last_raw_floor_state = floor_switch_1.value()
+last_raw_floor_state = read_combined_floor_state()
 debounced_floor_state = last_raw_floor_state
 last_floor_change_time = ticks_ms()
+
+# ============================================================
+# FLOOR RELEASE CONFIRMATION SETTINGS
+# ============================================================
+
+FLOOR_RELEASE_CONFIRM_MS = 3000
+
+floor_release_pending = False
+floor_release_start_time = 0
 
 
 # ============================================================
@@ -199,7 +237,8 @@ shared_status = {
     "userCount": 0,
     "solenoidValve": False,
     "bulbRelay": False,
-    "batteryLevel": 100
+    "batteryLevel": 100,
+    "enoughWater": False
 }
 
 # ============================================================
@@ -250,8 +289,29 @@ def update_shared_status(urine_level, poop_level):
     # No battery sensor for now, so send fixed value
     shared_status["batteryLevel"] = 100
 
+
+def read_combined_floor_state():
+    """
+    Reads both floor switches and combines them.
+
+    Actual tested behavior:
+        0 = released
+        1 = pressed
+
+    If either floor switch is pressed, return 1.
+    If both are released, return 0.
+    """
+
+    floor_1 = floor_switch_1.value()
+    floor_2 = floor_switch_2.value()
+
+    if floor_1 == 1 or floor_2 == 1:
+        return 1
+
+    return 0
+
 def read_switch_states():
-    floor_state = floor_switch_1.value()
+    floor_state = read_combined_floor_state()
     door_state = door_switch_1.value()
     lock_state = lock_switch_1.value()
 
@@ -531,29 +591,127 @@ def start_flush_close_sequence():
     flush_state = FLUSH_WAITING
     flush_state_start_time = ticks_ms()
 
+def show_no_water_message(flush_distance):
+    """
+    Displays No Water warning on OLED.
+    """
+
+    display.fill(0)
+    display.text("NO WATER", 28, 0)
+    display.text("Flush tank", 15, 20)
+    display.text("is empty", 28, 34)
+
+    if flush_distance >= 0:
+        display.text("{:.1f} cm".format(flush_distance), 32, 52)
+    else:
+        display.text("Sensor error", 12, 52)
+
+    display.show()
+
+
+def no_water_message_is_active():
+    """
+    Keeps the No Water message visible for a few seconds.
+    """
+
+    return ticks_diff(no_water_display_until, ticks_ms()) > 0
+
+def read_flush_tank_distance_cm():
+    """
+    Reads distance from the flush tank ultrasonic sensor.
+
+    Trigger -> GP10
+    Echo    -> GP11
+
+    Returns:
+        positive value = distance in cm
+        -4 = timeout / no echo
+    """
+
+    flush_tank_trig.value(0)
+    sleep_us(2)
+
+    flush_tank_trig.value(1)
+    sleep_us(10)
+    flush_tank_trig.value(0)
+
+    start_wait = ticks_us()
+
+    # Wait for echo to go HIGH
+    while flush_tank_echo.value() == 0:
+        if ticks_diff(ticks_us(), start_wait) > 30000:
+            return -4
+
+    pulse_start = ticks_us()
+
+    # Wait for echo to go LOW
+    while flush_tank_echo.value() == 1:
+        if ticks_diff(ticks_us(), pulse_start) > 30000:
+            return -4
+
+    pulse_end = ticks_us()
+
+    duration = ticks_diff(pulse_end, pulse_start)
+
+    # Speed of sound = 0.0343 cm/us
+    distance_cm = (duration * 0.0343) / 2
+
+    return distance_cm
+
+def update_enough_water_status():
+    """
+    Updates shared_status["enoughWater"] using the flush tank ultrasonic sensor.
+
+    Flush tank logic:
+        distance <= FLUSH_TANK_EMPTY_DISTANCE_CM means enough water
+        distance >  FLUSH_TANK_EMPTY_DISTANCE_CM means no water
+        invalid reading means assume no water, to protect the pump
+    """
+
+    flush_tank_distance = read_flush_tank_distance_cm()
+    
+    if flush_tank_distance >= 0 and flush_tank_distance <= FLUSH_TANK_EMPTY_DISTANCE_CM:
+        shared_status["enoughWater"] = True
+    else:
+        shared_status["enoughWater"] = False
+
+    print("Flush tank water distance:", flush_tank_distance, "cm")
+
+    if flush_tank_distance >= 0 and flush_tank_distance <= FLUSH_TANK_EMPTY_DISTANCE_CM:
+        shared_status["enoughWater"] = True
+        print("enoughWater: True")
+    else:
+        shared_status["enoughWater"] = False
+        print("enoughWater: False")
 
 def process_flush_close_sequence(current_floor_state):
     """
     Processes the flush and gate-close sequence without blocking the main loop.
 
-    Sequence:
-    1. Wait 5 seconds
-    2. Open valve
-    3. Wait 1.5 seconds
-    4. Start pump
-    5. Run pump and valve for 4 seconds
-    6. Turn pump and valve OFF
-    7. Close gate using servos
+    Actual floor switch behavior:
+        Floor released / no person      = 0
+        Floor pressed / person standing = 1
+
+    Flush tank protection:
+        If flush tank ultrasonic distance is greater than 30 cm,
+        the flush tank is considered empty.
+
+        In that case:
+            - Do not open the solenoid valve
+            - Do not start the pump
+            - Display NO WATER on the OLED
+            - Close the separation gate
     """
 
     global flush_state
     global flush_state_start_time
     global current_gate_state
+    global no_water_display_until
 
     now = ticks_ms()
 
     # If someone steps back on the floor during the sequence, stop flushing.
-    if current_floor_state == 0 and flush_state != FLUSH_IDLE:
+    if current_floor_state == 1 and flush_state != FLUSH_IDLE:
         print("Floor pressed during flush sequence. Stopping flush.")
         cancel_flush_sequence()
         return
@@ -563,6 +721,54 @@ def process_flush_close_sequence(current_floor_state):
 
     if flush_state == FLUSH_WAITING:
         if ticks_diff(now, flush_state_start_time) >= FLUSH_WAIT_BEFORE_WATER_MS:
+
+            flush_tank_distance = read_flush_tank_distance_cm()
+
+            print("Flush tank distance:", flush_tank_distance, "cm")
+
+            # If distance is greater than 30 cm, tank is empty
+            if flush_tank_distance > FLUSH_TANK_EMPTY_DISTANCE_CM:
+                print("NO WATER: Flush tank is empty")
+                print("Pump and valve will NOT turn ON")
+
+                water_pump_relay.value(0)
+                solenoid_valve_relay.value(0)
+
+                show_no_water_message(flush_tank_distance)
+                no_water_display_until = ticks_ms() + NO_WATER_DISPLAY_TIME_MS
+
+                print("Closing separation gate without flushing")
+                close_both_servos(delay=0.005)
+
+                current_gate_state = GATE_CLOSED
+                shared_status["solenoidValve"] = False
+                save_gate_state(GATE_CLOSED)
+
+                flush_state = FLUSH_IDLE
+                return
+
+            # If sensor has no echo/error, also protect the pump
+            if flush_tank_distance < 0:
+                print("NO WATER / SENSOR ERROR: Flush tank reading invalid")
+                print("Pump and valve will NOT turn ON")
+
+                water_pump_relay.value(0)
+                solenoid_valve_relay.value(0)
+
+                show_no_water_message(flush_tank_distance)
+                no_water_display_until = ticks_ms() + NO_WATER_DISPLAY_TIME_MS
+
+                print("Closing separation gate without flushing")
+                close_both_servos(delay=0.005)
+
+                current_gate_state = GATE_CLOSED
+                shared_status["solenoidValve"] = False
+                save_gate_state(GATE_CLOSED)
+
+                flush_state = FLUSH_IDLE
+                return
+
+            print("Flush tank has water")
             print("Opening water valve")
             solenoid_valve_relay.value(1)
 
@@ -1018,7 +1224,7 @@ def run_floor_on_to_off_action():
     """
     Runs immediately when the floor switch is pressed.
 
-    Floor pressed = 0
+    Floor pressed = 1
 
     Action:
         Open the separation gate using the two servo motors.
@@ -1044,7 +1250,7 @@ def run_floor_off_to_on_action():
     """
     Runs when the floor switch is released.
 
-    Floor released = 1
+    Floor released = 0
 
     Action:
         Starts the non-blocking flush and close sequence.
@@ -1057,40 +1263,75 @@ def run_floor_off_to_on_action():
 
 def handle_floor_switch_state_change(current_floor_state):
     """
-    Uses the live floor switch state to control the separation gate.
+    Uses the live debounced floor switch state to control the separation gate.
 
-    With Pin.PULL_UP:
-        Floor pressed / person standing = 0
-        Floor released / no person      = 1
+    Actual floor switch behavior from testing:
+        Floor released / no person      = 0
+        Floor pressed / person standing = 1
 
-    Floor released -> pressed:
-        Open the separation gate using the two servo motors.
+    Important:
+        The gate opens immediately when floor_state becomes 1.
 
-    Floor pressed -> released:
-        Wait, flush, then close the separation gate.
+        The flushing sequence does NOT start immediately when floor_state
+        becomes 0. Instead, floor_state must stay 0 for more than 3 seconds.
+        This prevents flushing when the person is still using the toilet but
+        makes small movements that briefly release the floor switches.
     """
 
     global previous_floor_state
+    global floor_release_pending
+    global floor_release_start_time
 
-    if current_floor_state != previous_floor_state:
+    now = ticks_ms()
 
-        # Floor released -> pressed
-        # Someone has stepped onto the floor
-        if previous_floor_state == 1 and current_floor_state == 0:
+    # --------------------------------------------------------
+    # CASE 1: Floor is pressed
+    # Person is on the toilet/floor switch
+    # --------------------------------------------------------
+    if current_floor_state == 1:
+
+        # If we were waiting to confirm release, cancel it
+        if floor_release_pending:
+            print("Floor pressed again before 3 seconds")
+            print("Release confirmation cancelled")
+            floor_release_pending = False
+
+        # If confirmed previous state was released, this is a real press event
+        if previous_floor_state == 0:
             print("Floor switch changed from RELEASED to PRESSED")
             print("Opening separation gate")
 
             run_floor_on_to_off_action()
 
-        # Floor pressed -> released
-        # Someone has stepped off the floor
-        elif previous_floor_state == 0 and current_floor_state == 1:
-            print("Floor switch changed from PRESSED to RELEASED")
-            print("Running flush and closing sequence")
+            previous_floor_state = 1
 
-            run_floor_off_to_on_action()
+        return
 
-        previous_floor_state = current_floor_state
+    # --------------------------------------------------------
+    # CASE 2: Floor is released
+    # Possible person has stepped off
+    # --------------------------------------------------------
+    if current_floor_state == 0:
+
+        # Only start release confirmation if previous confirmed state was pressed
+        if previous_floor_state == 1 and not floor_release_pending:
+            print("Floor switch appears RELEASED")
+            print("Waiting 3 seconds to confirm user has stepped off")
+
+            floor_release_pending = True
+            floor_release_start_time = now
+
+        # If release has remained stable for more than 3 seconds
+        if floor_release_pending:
+            if ticks_diff(now, floor_release_start_time) >= FLOOR_RELEASE_CONFIRM_MS:
+                print("Floor has been released for more than 3 seconds")
+                print("Confirmed user has stepped off")
+                print("Starting flush and close sequence")
+
+                floor_release_pending = False
+                previous_floor_state = 0
+
+                run_floor_off_to_on_action()
 
 def load_user_count():
     """
@@ -1332,7 +1573,8 @@ def send_email_alert(tank_name, tank_level, tank_distance):
         smtp = umail.SMTP("smtp.gmail.com", 465, ssl=True)
 
         smtp.login(sender_email, sender_app_password)
-        smtp.to(recipient_email)
+        smtp.to(recipient_email_1)
+        smtp.to(recipient_email_2)
 
         smtp.write("From:" + sender_name + "<" + sender_email + ">\n")
         smtp.write("Subject:" + email_subject + "\n\n")
@@ -1704,7 +1946,7 @@ def start_dashboard_server():
 # ============================================================
 
 
-previous_floor_state = update_floor_switch_debounce(floor_switch_1.value())
+previous_floor_state = update_floor_switch_debounce(read_combined_floor_state())
 
 # ============================================================
 # MAIN LOOP
@@ -1717,7 +1959,7 @@ init_system()
 startup_move_gate_to_known_position()
 
 # If someone is already standing on the floor at startup, open the gate
-if update_floor_switch_debounce(floor_switch_1.value()) == 0:
+if update_floor_switch_debounce(read_combined_floor_state()) == 1:
     print("Floor already pressed at startup. Opening gate.")
     open_both_servos(delay=0.005)
     current_gate_state = GATE_OPEN
@@ -1785,6 +2027,9 @@ while True:
     # Always update these, even if tank readings are not stable
     shared_status["userCount"] = user_count
     shared_status["bulbRelay"] = bool(bulb_relay.value())
+    
+    # Update flush tank water status for dashboard
+    update_enough_water_status()
 
     # Print raw readings
     print("Raw urine tank distance:", format_distance(raw_urine_tank_distance))
@@ -1838,7 +2083,10 @@ while True:
 
         # Show stable tank levels on OLED
         # Show welcome message if facial recognition was recently received
-        if welcome_message_is_active():
+        if no_water_message_is_active():
+            pass
+
+        elif welcome_message_is_active():
             show_welcome_message(
                 latest_recognized_name,
                 latest_recognition_confidence
@@ -1847,7 +2095,10 @@ while True:
             show_tank_levels(stable_urine_tank_distance, stable_poop_tank_distance)
 
     else:
-        if welcome_message_is_active():
+        if no_water_message_is_active():
+            pass
+
+        elif welcome_message_is_active():
             show_welcome_message(
                 latest_recognized_name,
                 latest_recognition_confidence
@@ -1856,7 +2107,7 @@ while True:
             display.fill(0)
             display.text("Stabilizing...", 0, 0)
             display.text("Please wait", 0, 20)
-            display.show()        
+            display.show()      
 
     print("--------------------")
     sleep_ms(200)
