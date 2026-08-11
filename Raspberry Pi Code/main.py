@@ -174,8 +174,8 @@ servo_gp7.freq(50)
 
 FLOOR_DEBOUNCE_MS = 300
 
-last_raw_floor_state = read_combined_floor_state()
-debounced_floor_state = last_raw_floor_state
+last_raw_floor_state = 0
+debounced_floor_state = 0
 last_floor_change_time = ticks_ms()
 
 # ============================================================
@@ -669,11 +669,6 @@ def update_enough_water_status():
     """
 
     flush_tank_distance = read_flush_tank_distance_cm()
-    
-    if flush_tank_distance >= 0 and flush_tank_distance <= FLUSH_TANK_EMPTY_DISTANCE_CM:
-        shared_status["enoughWater"] = True
-    else:
-        shared_status["enoughWater"] = False
 
     print("Flush tank water distance:", flush_tank_distance, "cm")
 
