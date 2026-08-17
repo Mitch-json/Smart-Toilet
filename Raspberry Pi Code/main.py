@@ -1,3 +1,4 @@
+import ntptime
 from machine import Pin, I2C, UART, PWM
 from utime import sleep_ms, sleep_us, ticks_ms, ticks_us, ticks_diff
 import sh1106
@@ -21,11 +22,48 @@ import json
 led = Pin("LED", Pin.OUT)
 
 # ============================================================
+# BLYNK CLOUD SETTINGS
+# ============================================================
+
+TIMEZONE_OFFSET_SECONDS = 3 * 60 * 60   # Kenya / East Africa Time = UTC+3
+last_time_sync_ms = None
+TIME_SYNC_INTERVAL_MS = 21600000        # Resync every 6 hours
+
+BLYNK_AUTH_TOKEN = "sq041xHOesOzIKXlkpvMIiEFRl5Ggfd-"
+BLYNK_SERVER = "ny3.blynk.cloud"
+
+# ============================================================
+# BLYNK UPDATE TIMING
+#
+# Normal mode:
+#   - Full status update once per day
+#   - Heartbeat every 10 minutes
+#   - Check liveMode every 60 seconds
+#
+# Live mode:
+#   - Full status update every 2 seconds
+# ============================================================
+
+BLYNK_NORMAL_STATUS_INTERVAL_MS = 86400000     # 24 hours
+BLYNK_HEARTBEAT_INTERVAL_MS = 600000          # 10 minutes
+BLYNK_LIVE_MODE_CHECK_INTERVAL_MS = 60000     # 60 seconds
+BLYNK_LIVE_STATUS_INTERVAL_MS = 2000          # 2 seconds
+
+last_blynk_status_update_time = None
+last_blynk_heartbeat_time = None
+last_blynk_live_check_time = None
+last_blynk_live_status_time = None
+
+blynk_heartbeat = 0
+live_mode_enabled = False
+
+# ============================================================
 # EMAIL ALERT SETTINGS
 # ============================================================
 
 WIFI_SSID = "4G-MIFI-A1C2"
-WIFI_PASSWORD = "1234567890"
+WIFI_PASSWORD = "MTcircular2026"
+
 
 sender_email = "mitchjaga@gmail.com"
 sender_name = "Smart Toilet"
@@ -40,6 +78,16 @@ POOP_EMAIL_STATE_FILE = "poop_email_sent.txt"
 
 urine_email_sent = False
 poop_email_sent = False
+
+# ============================================================
+# SOLAR POWER INPUT SETUP
+# Solar power signal -> GP19
+#
+# 1 = solar power available
+# 0 = no solar power
+# ============================================================
+
+solar_in = Pin(19, Pin.IN, Pin.PULL_DOWN)
 
 # ============================================================
 # TANK LEVEL SETTINGS
@@ -158,15 +206,29 @@ NO_WATER_DISPLAY_TIME_MS = 5000
 
 # ============================================================
 # SERVO MOTOR GATE SETUP
-# GP6 servo: 180 degrees closed, 90 degrees open
-# GP7 servo: 0 degrees closed, 90 degrees open
+#
+# GP6 servo:
+#   Closed = 180 degrees
+#   Open   = 105 degrees
+#
+# GP1 servo:
+#   Closed = 0 degrees
+#   Open   = 75 degrees
+#
+# Each gate moves 75 degrees.
 # ============================================================
 
 servo_gp6 = PWM(Pin(6))
-servo_gp7 = PWM(Pin(7))
+servo_gp1 = PWM(Pin(1))
 
 servo_gp6.freq(50)
-servo_gp7.freq(50)
+servo_gp1.freq(50)
+
+GP6_CLOSED_ANGLE = 180
+GP6_OPEN_ANGLE = 105
+
+GP1_CLOSED_ANGLE = 0
+GP1_OPEN_ANGLE = 75
 
 # ============================================================
 # FLOOR SWITCH DEBOUNCE SETTINGS
@@ -237,8 +299,11 @@ shared_status = {
     "userCount": 0,
     "solenoidValve": False,
     "bulbRelay": False,
-    "batteryLevel": 100,
-    "enoughWater": False
+    "solarPower": False,
+    "enoughWater": False,
+    "picoHeartbeat": 0,
+    "liveMode": False,
+    "lastUpdate": ""
 }
 
 # ============================================================
@@ -286,8 +351,8 @@ def update_shared_status(urine_level, poop_level):
     shared_status["userCount"] = user_count
     shared_status["bulbRelay"] = bool(bulb_relay.value())
 
-    # No battery sensor for now, so send fixed value
-    shared_status["batteryLevel"] = 100
+    # Solar power status from GP19
+    shared_status["solarPower"] = solar_power_available()
 
 
 def read_combined_floor_state():
@@ -390,34 +455,26 @@ def open_both_servos(delay=0.005):
     """
     Opens the separation gate.
 
-    Opening:
-    1. GP6 moves first from 180 to 170.
-    2. Then GP6 and GP7 open together.
-
-    GP6: 180 closed -> 90 open
-    GP7: 0 closed   -> 90 open
+    Opening sequence:
+        1. GP6 moves first from 180 to 105
+        2. GP1 moves second from 0 to 75
     """
 
-    print("Opening gate: GP6 starts first")
+    print("Opening gate: GP6 opens first")
+    move_one_servo(
+        servo_gp6,
+        GP6_CLOSED_ANGLE,
+        GP6_OPEN_ANGLE,
+        delay
+    )
 
-    move_one_servo(servo_gp6, 180, 170, delay)
-
-    print("Opening gate: both servos moving together")
-
-    gp6_angle = 170
-    gp7_angle = 0
-
-    while gp6_angle >= 90 or gp7_angle <= 90:
-
-        if gp6_angle >= 90:
-            set_angle(servo_gp6, gp6_angle)
-            gp6_angle -= 1
-
-        if gp7_angle <= 90:
-            set_angle(servo_gp7, gp7_angle)
-            gp7_angle += 1
-
-        time.sleep(delay)
+    print("Opening gate: GP1 opens second")
+    move_one_servo(
+        servo_gp1,
+        GP1_CLOSED_ANGLE,
+        GP1_OPEN_ANGLE,
+        delay
+    )
 
     shared_status["solenoidValve"] = True
     save_gate_state(GATE_OPEN)
@@ -428,34 +485,26 @@ def close_both_servos(delay=0.005):
     """
     Closes the separation gate.
 
-    Closing:
-    1. GP7 moves first from 90 to 80.
-    2. Then GP7 and GP6 close together.
-
-    GP7: 90 open -> 0 closed
-    GP6: 90 open -> 180 closed
+    Closing sequence:
+        1. GP1 moves first from 75 to 0
+        2. GP6 moves second from 105 to 180
     """
 
-    print("Closing gate: GP7 starts first")
+    print("Closing gate: GP1 closes first")
+    move_one_servo(
+        servo_gp1,
+        GP1_OPEN_ANGLE,
+        GP1_CLOSED_ANGLE,
+        delay
+    )
 
-    move_one_servo(servo_gp7, 90, 80, delay)
-
-    print("Closing gate: both servos moving together")
-
-    gp7_angle = 80
-    gp6_angle = 90
-
-    while gp7_angle >= 0 or gp6_angle <= 180:
-
-        if gp7_angle >= 0:
-            set_angle(servo_gp7, gp7_angle)
-            gp7_angle -= 1
-
-        if gp6_angle <= 180:
-            set_angle(servo_gp6, gp6_angle)
-            gp6_angle += 1
-
-        time.sleep(delay)
+    print("Closing gate: GP6 closes second")
+    move_one_servo(
+        servo_gp6,
+        GP6_OPEN_ANGLE,
+        GP6_CLOSED_ANGLE,
+        delay
+    )
 
     shared_status["solenoidValve"] = False
     save_gate_state(GATE_CLOSED)
@@ -524,8 +573,8 @@ def startup_move_gate_to_known_position():
 
     else:
         print("Gate was last closed. Setting closed servo positions.")
-        set_angle(servo_gp6, 180)
-        set_angle(servo_gp7, 0)
+        set_angle(servo_gp6, GP6_CLOSED_ANGLE)
+        set_angle(servo_gp1, GP1_CLOSED_ANGLE)
 
     current_gate_state = GATE_CLOSED
     shared_status["solenoidValve"] = False
@@ -1943,6 +1992,388 @@ def start_dashboard_server():
 
 previous_floor_state = update_floor_switch_debounce(read_combined_floor_state())
 
+
+def http_get(host, path):
+    """
+    Sends a simple HTTP GET request.
+
+    This uses port 80 because it is simpler and lighter for the Pico W.
+    """
+
+    try:
+        addr = socket.getaddrinfo(host, 80)[0][-1]
+
+        s = socket.socket()
+        s.settimeout(5)
+        s.connect(addr)
+
+        request = (
+            "GET " + path + " HTTP/1.1\r\n"
+            "Host: " + host + "\r\n"
+            "Connection: close\r\n"
+            "\r\n"
+        )
+
+        s.send(request.encode())
+
+        response = s.recv(256)
+        s.close()
+
+        return response
+
+    except Exception as e:
+        print("HTTP GET failed:", e)
+
+        try:
+            s.close()
+        except:
+            pass
+
+        return None
+
+def get_http_body(response):
+    """
+    Extracts the body text from a simple HTTP response.
+    Used for reading Blynk get responses such as v8 liveMode.
+    """
+
+    if response is None:
+        return ""
+
+    try:
+        if isinstance(response, bytes):
+            response_text = response.decode()
+        else:
+            response_text = str(response)
+
+        split_index = response_text.find("\r\n\r\n")
+
+        if split_index >= 0:
+            return response_text[split_index + 4:].strip()
+
+        return response_text.strip()
+
+    except Exception as e:
+        print("Could not parse HTTP body:", e)
+        return ""
+
+
+def increment_blynk_heartbeat():
+    """
+    Increments the Pico heartbeat counter.
+    """
+
+    global blynk_heartbeat
+
+    blynk_heartbeat += 1
+
+    if blynk_heartbeat > 1000000:
+        blynk_heartbeat = 0
+
+    shared_status["picoHeartbeat"] = blynk_heartbeat
+
+    return blynk_heartbeat
+
+
+def send_heartbeat_to_blynk():
+    """
+    Sends only heartbeat to Blynk.
+
+    Virtual pin:
+        v7 = picoHeartbeat
+
+    NOTE:
+        This does NOT update v9.
+        v9 is only updated when full shared_status is sent.
+    """
+
+    heartbeat_value = increment_blynk_heartbeat()
+
+    path = (
+        "/external/api/update?"
+        + "token=" + BLYNK_AUTH_TOKEN
+        + "&v7=" + str(heartbeat_value)
+    )
+
+    print("Sending heartbeat to Blynk:", heartbeat_value)
+
+    response = http_get(BLYNK_SERVER, path)
+
+    if response:
+        print("Blynk heartbeat sent")
+    else:
+        print("Blynk heartbeat failed")
+
+
+def solar_power_available():
+    """
+    Reads solar power input.
+
+    GP19:
+        1 = solar power available
+        0 = no solar power
+    """
+
+    return solar_in.value() == 1
+
+
+def show_no_power_message():
+    """
+    Displays no-power warning on OLED.
+    """
+
+    display.fill(0)
+    display.text("NO POWER", 28, 0)
+    display.text("Please contact", 8, 24)
+    display.text("Admin", 44, 44)
+    display.show()
+
+
+def update_solar_power_status():
+    """
+    Updates shared_status["solarPower"] using GP19.
+    """
+
+    if solar_power_available():
+        shared_status["solarPower"] = True
+        print("solarPower: True")
+    else:
+        shared_status["solarPower"] = False
+        print("solarPower: False")
+
+def sync_pico_time():
+    """
+    Syncs Pico real time using NTP.
+    Requires WiFi.
+    """
+
+    global last_time_sync_ms
+
+    try:
+        print("Syncing Pico time using NTP...")
+        ntptime.settime()
+        last_time_sync_ms = ticks_ms()
+        print("Pico time synced")
+        return True
+
+    except Exception as e:
+        print("NTP time sync failed:", e)
+        return False
+
+
+def ensure_time_is_synced():
+    """
+    Syncs time at startup and then periodically.
+    """
+
+    if last_time_sync_ms is None:
+        return sync_pico_time()
+
+    if ticks_diff(ticks_ms(), last_time_sync_ms) >= TIME_SYNC_INTERVAL_MS:
+        return sync_pico_time()
+
+    return True
+
+
+def get_current_datetime_string():
+    """
+    Returns current local date and time as a string.
+
+    Example:
+        2026-08-17 17:28:45
+    """
+
+    try:
+        utc_seconds = time.time()
+        local_seconds = utc_seconds + TIMEZONE_OFFSET_SECONDS
+        year, month, day, hour, minute, second, weekday, yearday = time.localtime(local_seconds)
+
+        return (
+            str(year) + "-"
+            + "{:02d}".format(month) + "-"
+            + "{:02d}".format(day) + " "
+            + "{:02d}".format(hour) + ":"
+            + "{:02d}".format(minute) + ":"
+            + "{:02d}".format(second)
+        )
+
+    except Exception as e:
+        print("Could not get current datetime:", e)
+        return "TIME_NOT_AVAILABLE"
+
+def send_status_to_blynk():
+    """
+    Sends the latest shared_status values to Blynk Cloud.
+
+    Virtual pins:
+        v0 = urineTankLevel
+        v1 = poopTankLevel
+        v2 = userCount
+        v3 = solenoidValve
+        v4 = bulbRelay
+        v5 = solarPower
+        v6 = enoughWater
+        v7 = picoHeartbeat
+
+    NOTE:
+        v8 = liveMode is controlled by the dashboard.
+        The Pico reads v8, but does not overwrite it.
+    """
+
+    urine_level = shared_status["urineTankLevel"]
+    poop_level = shared_status["poopTankLevel"]
+    user_count_value = shared_status["userCount"]
+
+    separation_gate = 1 if shared_status["solenoidValve"] else 0
+    bulb_state = 1 if shared_status["bulbRelay"] else 0
+    solar_power = 1 if shared_status["solarPower"] else 0
+    enough_water = 1 if shared_status["enoughWater"] else 0
+    heartbeat_value = increment_blynk_heartbeat()
+
+    ensure_time_is_synced()
+    last_status_update = get_current_datetime_string()
+    shared_status["lastUpdate"] = last_status_update
+    
+    path = (
+        "/external/api/batch/update?"
+        + "token=" + BLYNK_AUTH_TOKEN
+        + "&v0=" + str(urine_level)
+        + "&v1=" + str(poop_level)
+        + "&v2=" + str(user_count_value)
+        + "&v3=" + str(separation_gate)
+        + "&v4=" + str(bulb_state)
+        + "&v5=" + str(solar_power)
+        + "&v6=" + str(enough_water)
+        + "&v7=" + str(heartbeat_value)
+        + "&v9=" + last_status_update.replace(" ", "%20")
+    )
+
+    print("Sending full status to Blynk")
+    print("Live mode:", live_mode_enabled)
+    print("Heartbeat:", heartbeat_value)
+
+    response = http_get(BLYNK_SERVER, path)
+
+    if response:
+        print("Blynk full status update sent")
+    else:
+        print("Blynk full status update failed")
+
+
+def read_live_mode_from_blynk():
+    """
+    Reads liveMode command from Blynk.
+
+    Virtual pin:
+        v8 = liveMode
+
+    v8 = 0 means normal mode
+    v8 = 1 means live mode
+    """
+
+    global live_mode_enabled
+
+    path = (
+        "/external/api/get?"
+        + "token=" + BLYNK_AUTH_TOKEN
+        + "&v8"
+    )
+
+    print("Checking liveMode from Blynk")
+
+    response = http_get(BLYNK_SERVER, path)
+    body = get_http_body(response)
+
+    print("Blynk liveMode response:", body)
+
+    if body == "1":
+        if not live_mode_enabled:
+            print("LIVE MODE ENABLED")
+
+        live_mode_enabled = True
+        shared_status["liveMode"] = True
+        return True
+
+    if body == "0":
+        if live_mode_enabled:
+            print("LIVE MODE DISABLED")
+
+        live_mode_enabled = False
+        shared_status["liveMode"] = False
+        return False
+
+    print("Invalid liveMode response. Keeping previous mode:", live_mode_enabled)
+    return live_mode_enabled
+
+
+def handle_blynk_timing():
+    """
+    Controls Blynk communication rate.
+
+    Normal mode:
+        - Full status once per day
+        - Heartbeat every 10 minutes
+        - Check liveMode every 60 seconds
+
+    Live mode:
+        - Full status every 2 seconds
+        - Check liveMode every 60 seconds
+    """
+
+    global last_blynk_status_update_time
+    global last_blynk_heartbeat_time
+    global last_blynk_live_check_time
+    global last_blynk_live_status_time
+
+    now = ticks_ms()
+
+    # Check dashboard liveMode command every 60 seconds
+    if (
+        last_blynk_live_check_time is None or
+        ticks_diff(now, last_blynk_live_check_time) >= BLYNK_LIVE_MODE_CHECK_INTERVAL_MS
+    ):
+        read_live_mode_from_blynk()
+        last_blynk_live_check_time = now
+
+    # --------------------------------------------------------
+    # LIVE MODE
+    # --------------------------------------------------------
+    if live_mode_enabled:
+
+        if (
+            last_blynk_live_status_time is None or
+            ticks_diff(now, last_blynk_live_status_time) >= BLYNK_LIVE_STATUS_INTERVAL_MS
+        ):
+            send_status_to_blynk()
+            last_blynk_live_status_time = now
+            last_blynk_status_update_time = now
+            last_blynk_heartbeat_time = now
+
+        return
+
+    # --------------------------------------------------------
+    # NORMAL MODE
+    # --------------------------------------------------------
+
+    # Full status once per day
+    if (
+        last_blynk_status_update_time is None or
+        ticks_diff(now, last_blynk_status_update_time) >= BLYNK_NORMAL_STATUS_INTERVAL_MS
+    ):
+        send_status_to_blynk()
+        last_blynk_status_update_time = now
+        last_blynk_heartbeat_time = now
+        return
+
+    # Heartbeat every 10 minutes
+    if (
+        last_blynk_heartbeat_time is None or
+        ticks_diff(now, last_blynk_heartbeat_time) >= BLYNK_HEARTBEAT_INTERVAL_MS
+    ):
+        send_heartbeat_to_blynk()
+        last_blynk_heartbeat_time = now
+
+
 # ============================================================
 # MAIN LOOP
 # ============================================================
@@ -1975,6 +2406,8 @@ print("Saved poop email state:", poop_email_sent)
 wifi_connected = connect_to_internet(WIFI_SSID, WIFI_PASSWORD)
 
 if wifi_connected:
+    sync_pico_time()
+
     try:
         _thread.start_new_thread(start_dashboard_server, ())
         print("Dashboard server started")
@@ -2022,6 +2455,9 @@ while True:
     # Always update these, even if tank readings are not stable
     shared_status["userCount"] = user_count
     shared_status["bulbRelay"] = bool(bulb_relay.value())
+    
+    # Update solar power status from GP19
+    update_solar_power_status()
     
     # Update flush tank water status for dashboard
     update_enough_water_status()
@@ -2078,7 +2514,10 @@ while True:
 
         # Show stable tank levels on OLED
         # Show welcome message if facial recognition was recently received
-        if no_water_message_is_active():
+        if not solar_power_available():
+            show_no_power_message()
+
+        elif no_water_message_is_active():
             pass
 
         elif welcome_message_is_active():
@@ -2090,7 +2529,10 @@ while True:
             show_tank_levels(stable_urine_tank_distance, stable_poop_tank_distance)
 
     else:
-        if no_water_message_is_active():
+        if not solar_power_available():
+            show_no_power_message()
+
+        elif no_water_message_is_active():
             pass
 
         elif welcome_message_is_active():
@@ -2102,7 +2544,18 @@ while True:
             display.fill(0)
             display.text("Stabilizing...", 0, 0)
             display.text("Please wait", 0, 20)
-            display.show()      
+            display.show()     
 
     print("--------------------")
+
+    # Handle Blynk timing:
+    #   Normal mode: daily status + 10-minute heartbeat
+    #   Live mode: status every 2 seconds
+    if wifi_connected:
+        handle_blynk_timing()
+    else:
+        print("WiFi not connected. Blynk update skipped.")
+    
     sleep_ms(200)
+
+
